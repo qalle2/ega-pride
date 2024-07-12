@@ -1,5 +1,7 @@
 # ega-pride
-A multiple-choice pride flag quiz. Requires DOS and EGA. Only 5 flags at the moment.
+A multiple-choice pride flag quiz. Requires DOS and EGA. Only 5 flags at the moment. Compiled with Microsoft QuickBasic 4.5.
+
+![screenshot; shows the rainbow flag and asks if it's the rainbow, intersex or pansexual flag](snap.png)
 
 Table of contents:
 * [Technical info](#technical-info)
@@ -24,4 +26,4 @@ Original aspect ratio in parentheses.
 * [nonbinary](https://commons.wikimedia.org/wiki/File:Nonbinary_flag.svg) (3:2) (not yet included)
 * [pansexual](https://commons.wikimedia.org/wiki/File:Pansexuality_Pride_Flag.svg) (5:3)
 * [asexual](https://commons.wikimedia.org/wiki/File:Asexual_Pride_Flag.svg) (5:3)
-* [rainbow](https://commons.wikimedia.org/wiki/File:Gay_Pride_Flag.svg) (13:8, or more precisely 259:160)
+* [rainbow](https://commons.wikimedia.org/wiki/File:Gay_Pride_Flag.svg) (13:8 or more precisely 259:160)
