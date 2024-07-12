@@ -1,36 +1,88 @@
-DECLARE SUB drawflag (commands$)
+DECLARE SUB drawflag (drawcommands$)
 DECLARE SUB printstring (stri$)
+DECLARE FUNCTION deletespaces$ (old$)
+DEFINT A-Z
 
-' commands: FH,FS,RE,HR,VR,CC,--
-DATA intersex,fh178--fs014--cc061005--cc044014
-DATA transgender,fh160--fs011--hr032127013--hr064096015
-DATA pansexual,fh160--hr000053012--hr054106014--hr107159011
-DATA asexual,fh160--hr000039000--hr040079008--hr080119015--hr120159005
-DATA rainbow,fh164--hr000026012--hr027054012--dh027054014--hr055081014--hr082108002--hr109136009--hr137163005
-DATA -,-
+CONST MAXFLAGS = 20  ' maximum number of flags
+CONST CHOICECNT = 3  ' number of choices
 
-DIM names$(19), drawstrings$(19)
-DIM choices(2)  ' indexes to names$ and drawstrings$
+DIM names$(MAXFLAGS - 1)         ' names of flags
+DIM drawcommands$(MAXFLAGS - 1)  ' commands for drawing flags
+DIM choices(CHOICECNT - 1)       ' indexes to names$ and drawcommands$
+
+' Flag data (name followed by draw commands).
+' Commands and arguments (see drawflag sub for details):
+'   FH h         = set Flag Height
+'   HR y h c     = Horizontal Rectangle
+'   DH y h c     = Dithered Horizontal rectangle
+'   VR x w c     = Vertical Rectangle
+'   RE x w y h c = REctangle
+'   CC r c       = Centered Circle
+' Terminators:
+'   "-" as command = end this flag's data
+'   "-" as name    = end all flag data
+' Note: preprocessing removes spaces from commands.
+DATA intersex, FH 178
+DATA HR 000 177 014
+DATA CC 061 005
+DATA CC 044 014
+DATA -
+DATA transgender, FH 160
+DATA HR 000 160 011
+DATA HR 032 096 013
+DATA HR 064 032 015
+DATA -
+DATA pansexual, FH 160
+DATA HR 000 053 012
+DATA HR 053 054 014
+DATA HR 107 053 011
+DATA -
+DATA asexual, FH 160
+DATA HR 000 040 000
+DATA HR 040 040 008
+DATA HR 080 040 015
+DATA HR 120 040 005
+DATA -
+DATA rainbow, FH 164
+DATA HR 000 027 012
+DATA HR 027 027 012
+DATA DH 027 027 014
+DATA HR 054 028 014
+DATA HR 082 028 002
+DATA HR 110 027 009
+DATA HR 137 027 005
+DATA -
+DATA -
+
 RANDOMIZE TIMER
 
+' read flag data
 flagcount = 0
 DO
-    READ n$, ds$
-    IF n$ = "-" THEN EXIT DO
-    names$(flagcount) = n$
-    drawstrings$(flagcount) = ds$
+    READ item$  ' name or final terminator
+    IF item$ = "-" THEN EXIT DO
+    names$(flagcount) = item$
+    drawcom$ = ""
+    DO
+        READ item$  ' command or flag terminator
+        IF item$ = "-" THEN EXIT DO
+        drawcom$ = drawcom$ + item$
+    LOOP
+    drawcommands$(flagcount) = UCASE$(deletespaces$(drawcom$))
     flagcount = flagcount + 1
 LOOP
 
+IF flagcount < CHOICECNT THEN PRINT "Too few flags.": END
+
 SCREEN 7
 
-correct = INT(RND * flagcount)  ' index to names$, drawstrings$
-CALL drawflag(drawstrings$(correct))
+correct = INT(RND * flagcount)  ' index to names$, drawcommands$
+CALL drawflag(drawcommands$(correct))
 
 ' randomise choices (all different, must contain correct answer)
 DO
     hascorrect = 0
-    FOR i = 0 TO 2
+    FOR i = 0 TO CHOICECNT - 1
         DO
             choices(i) = INT(RND * flagcount)
             inuse = 0
@@ -42,19 +94,19 @@ DO
     NEXT
 LOOP UNTIL hascorrect
 
-' format question
-question$ = ""
-FOR i = 0 TO 2
-    question$ = question$ + LTRIM$(STR$(i + 1)) + "=" + names$(choices(i))
-    question$ = question$ + ", "
+' print question
+quest$ = ""
+FOR i = 0 TO CHOICECNT - 1
+    quest$ = quest$ + LTRIM$(STR$(i + 1)) + "=" + names$(choices(i)) + ", "
 NEXT
-question$ = question$ + "Q=quit?"
+quest$ = quest$ + "Q=quit?"
+CALL printstring(quest$)
 
 ' ask for choice
-CALL printstring(question$)
+validchoices$ = LEFT$("123456789", CHOICECNT) + "Q"
 DO
     choice$ = UCASE$(INPUT$(1))
-LOOP UNTIL INSTR("123Q", choice$)
+LOOP UNTIL INSTR(validchoices$, choice$)
 
 ' react to choice
 IF choice$ = "Q" THEN
@@ -68,63 +120,88 @@ END IF
 k$ = INPUT$(1)
 SCREEN 0
 
-SUB drawflag (commands$)
-' Draw flag by commands. The command string consists of blocks.
-' Each block starts with a command ("AA"-"ZZ", case insensitive) and is
-' followed by any number of arguments depending on the command.
-' Each argument is "000"-"999".
+DEFSNG A-Z
+FUNCTION deletespaces$ (old$)
+' delete spaces from the string
+DEFINT A-Z
+
+new$ = ""
+FOR i = 1 TO LEN(old$)
+    c$ = MID$(old$, i, 1)
+    IF c$ <> " " THEN new$ = new$ + c$
+NEXT
+deletespaces$ = new$
+
+END FUNCTION
+
+DEFSNG A-Z
+SUB drawflag (drawcommands$)
+' Draw a flag by Draw Commands.
+'   Draw Commands = a string with zero or more Blocks
+'     Block       = a Command followed by zero or more Arguments
+'       Command   = "AA"-"ZZ", in UPPER CASE
+'       Argument  = "000"-"999"; count depends on Command
+' Commands and their Arguments:
+'   FHh     = set Flag Height
+'   HRyhc   = Horizontal Rectangle (full width)
+'   DHyhc   = Dithered Horizontal rectangle (full width)
+'   VRxwc   = Vertical Rectangle (full height)
+'   RExwyhc = REctangle
+'   CCrc    = Centered Circle
+' Arguments:
+'   x, y = X position, Y position
+'   w, h = Width, Height
+'   r    = Radius
+'   c    = Color
+' Notes:
+'   - flag width is always 320
+'   - all shapes are filled (may not work if background isn't one-color)
+
+DEFINT A-Z
+DIM args(4)  ' Arguments
 
 fw = 320: fh = 200  ' default flag size
 
-DIM args(10)
-
 i = 1
-WHILE i < LEN(commands$)
-    ' read command
-    c$ = UCASE$(MID$(commands$, i, 2))
+WHILE i < LEN(drawcommands$)
+    ' Command
+    c$ = MID$(drawcommands$, i, 2)
     i = i + 2
 
-    ' get argument count
+    ' number of Arguments
     SELECT CASE c$
-        CASE "FH": argc = 1  ' Flag Height
-        CASE "FS": argc = 1  ' Fill Screen
-        CASE "RE": argc = 5  ' filled REctangle
-        CASE "HR": argc = 3  ' Horizontal filled Rectangle
-        CASE "VR": argc = 3  ' Vertical filled Rectangle
-        CASE "CC": argc = 2  ' Centered filled Circle
-        CASE "DH": argc = 3  ' Dithered Horizontal rectangle
-        CASE "--": argc = 0  ' nothing
-        CASE ELSE
-            PRINT "Unknown draw command: "; c$: END
+        CASE "FH": argc = 1
+        CASE "CC": argc = 2
+        CASE "HR", "DH", "VR": argc = 3
+        CASE "RE": argc = 5
+        CASE ELSE: PRINT "Unknown draw command: "; c$: END
     END SELECT
 
-    ' read arguments
+    ' Arguments
     FOR j = 0 TO argc - 1
-        args(j) = VAL(MID$(commands$, i, 3))
+        args(j) = VAL(MID$(drawcommands$, i, 3))
         i = i + 3
     NEXT
 
-    ' execute command
-    IF c$ = "FH" THEN  ' Flag Height
+    ' execute Command
+    IF c$ = "FH" THEN
         fh = args(0)
-    ELSEIF c$ = "FS" THEN  ' Fill Screen
-        LINE (0, 0)-(fw - 1, fh - 1), args(0), BF
-    ELSEIF c$ = "HR" THEN  ' Horizontal Rectangle (full width)
-        LINE (0, args(0))-(fw - 1, args(1)), args(2), BF
-    ELSEIF c$ = "VR" THEN  ' Vertical Rectangle (full height)
-        LINE (args(0), 0)-(args(1), fh - 1), args(2), BF
-    ELSEIF c$ = "RE" THEN  ' REctangle
-        LINE (args(0), args(1))-(args(2), args(3)), args(4), BF
-    ELSEIF c$ = "CC" THEN  ' Centered filled CIrcle
+    ELSEIF c$ = "HR" THEN
+        LINE (0, args(0))-(fw - 1, args(0) + args(1) - 1), args(2), BF
+    ELSEIF c$ = "DH" THEN
+        FOR Y = args(0) TO args(0) + args(1) - 1 STEP 2
+            LINE (0, Y)-(fw, Y), args(2), , &H5555
+            LINE (0, Y + 1)-(fw, Y + 1), args(2), , &HAAAA
+        NEXT
+    ELSEIF c$ = "VR" THEN
+        LINE (args(0), 0)-(args(0) + args(1) - 1, fh - 1), args(2), BF
+    ELSEIF c$ = "RE" THEN
+        x2 = args(0) + args(1) - 1
+        y2 = args(2) + args(3) - 1
+        LINE (args(0), x2)-(args(2), y2), args(4), BF
+    ELSEIF c$ = "CC" THEN
         CIRCLE (fw \ 2, fh \ 2), args(0), args(1)
         PAINT (fw \ 2, fh \ 2), args(1)
-    ELSEIF c$ = "DH" THEN  ' Dithered Horizontal rectangle (fullwidth)
-        FOR y = args(0) TO args(1) STEP 2
-            LINE (0, y)-(fw, y), args(2), , &H5555
-            LINE (0, y + 1)-(fw, y + 1), args(2), , &HAAAA
-        NEXT
-    ELSEIF c$ = "--" THEN
-        ' nothing (for readability)
     ELSE
         PRINT "Unknown draw command: "; c$
         END
@@ -133,12 +210,15 @@ WEND
 
 END SUB
 
+DEFSNG A-Z
 SUB printstring (stri$)
+' print a string on lines 24-25
+DEFINT A-Z
 
-LOCATE 24, 1: PRINT SPACE$(40);
-LOCATE 25, 1: PRINT SPACE$(40);
-LOCATE 24, 1: PRINT LEFT$(stri$, 40);
-LOCATE 25, 1: PRINT MID$(stri$, 40);
+FOR i = 0 TO 1
+    LOCATE 24 + i, 1: PRINT SPACE$(40);
+    LOCATE 24 + i, 1: PRINT MID$(stri$, i * 40 + 1, 40);
+NEXT
 
 END SUB
 
