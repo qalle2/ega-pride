@@ -1,5 +1,4 @@
 DECLARE SUB drawflag (drawcommands$)
-DECLARE SUB printstring (stri$)
 DECLARE FUNCTION deletespaces$ (old$)
 DECLARE FUNCTION runround% (correct%)
 DECLARE FUNCTION formatratio$ (a%, b%)
@@ -8,6 +7,7 @@ DECLARE SUB printgradtext (text$, y%)
 DECLARE SUB printcentered (text$, y%)
 DECLARE SUB titlescreen ()
 DECLARE SUB readflagdata ()
+DECLARE SUB printbottomtext (text$)
 DEFINT A-Z
 
 CONST MAXFLAGS = 20  ' maximum number of flags
@@ -17,6 +17,8 @@ CONST ROUNDCNT = 3   ' how many rounds
 DIM SHARED names$(MAXFLAGS - 1)         ' names of flags
 DIM SHARED drawcommands$(MAXFLAGS - 1)  ' commands for drawing flags
 DIM SHARED flagcount                    ' how many flags
+
+DIM corranswers(ROUNDCNT - 1)  ' correct answers
 
 ' Flag data (name followed by draw commands).
 ' Commands and arguments (see drawflag sub for details):
@@ -99,7 +101,8 @@ RANDOMIZE TIMER
 
 CALL readflagdata
 
-IF flagcount < CHOICECNT THEN PRINT "Too few flags.": END
+IF CHOICECNT > flagcount THEN PRINT "Too many choices.": END
+IF ROUNDCNT > flagcount THEN PRINT "Too many rounds.": END
 
 highscore = 0
 
@@ -109,14 +112,24 @@ CALL titlescreen
 k$ = getchoice$(" Q")
 IF k$ = "Q" THEN SCREEN 0: END
 
+' get correct answers (all different)
+FOR i = 0 TO ROUNDCNT - 1
+    DO
+        corranswers(i) = INT(RND * flagcount)
+        inuse = 0
+        FOR j = 0 TO i - 1
+            IF corranswers(j) = corranswers(i) THEN inuse = 1: EXIT FOR
+        NEXT
+    LOOP WHILE inuse
+NEXT
+
 DO
     ' main loop
 
     ' run quiz rounds
     score = 0
-    FOR round = 1 TO ROUNDCNT
-        correct = INT(RND * flagcount)
-        score = score + runround%(correct)
+    FOR round = 0 TO ROUNDCNT - 1
+        score = score + runround%(corranswers(round))
     NEXT
 
     ' print score and describe it
@@ -265,6 +278,18 @@ getchoice$ = k$
 END FUNCTION
 
 DEFSNG A-Z
+SUB printbottomtext (text$)
+' print a string on lines 24-25
+DEFINT A-Z
+
+FOR i = 0 TO 1
+    LOCATE 24 + i, 1: PRINT SPACE$(40);
+    LOCATE 24 + i, 1: PRINT MID$(text$, i * 40 + 1, 40);
+NEXT
+
+END SUB
+
+DEFSNG A-Z
 SUB printcentered (text$, y%)
 ' print centered text
 DEFINT A-Z
@@ -293,18 +318,6 @@ FOR i = 1 TO LEN(text$)
 NEXT
 
 COLOR 7: PRINT
-END SUB
-
-DEFSNG A-Z
-SUB printstring (stri$)
-' print a string on lines 24-25
-DEFINT A-Z
-
-FOR i = 0 TO 1
-    LOCATE 24 + i, 1: PRINT SPACE$(40);
-    LOCATE 24 + i, 1: PRINT MID$(stri$, i * 40 + 1, 40);
-NEXT
-
 END SUB
 
 DEFSNG A-Z
@@ -360,7 +373,7 @@ FOR i = 0 TO CHOICECNT - 1
     quest$ = quest$ + LTRIM$(STR$(i + 1)) + "=" + names$(choices(i)) + ", "
 NEXT
 quest$ = quest$ + "Q=quit?"
-CALL printstring(quest$)
+CALL printbottomtext(quest$)
 
 ' ask for choice
 validchoices$ = LEFT$("123456789", CHOICECNT) + "Q"
@@ -372,12 +385,12 @@ LOOP UNTIL INSTR(validchoices$, choice$)
 IF choice$ = "Q" THEN
     SCREEN 0: END
 ELSEIF choices(VAL(choice$) - 1) = correct THEN
-    CALL printstring("Correct. Press any key for the next flag.")
+    CALL printbottomtext("Correct. Press any key for the next flag.")
     runround% = 1
 ELSE
     s$ = "No, that was the " + names$(correct) + " flag. Press any key for "
     s$ = s$ + "the next flag."
-    CALL printstring(s$)
+    CALL printbottomtext(s$)
     runround% = 0
 END IF
 
