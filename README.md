@@ -1,5 +1,5 @@
 # ega-pride
-A multiple-choice pride flag quiz. Requires DOS and EGA. Only nine flags at the moment. Compiled with Microsoft QuickBasic 4.5.
+A multiple-choice pride flag quiz. Requires DOS and EGA. Only 12 flags at the moment. Compiled with Microsoft QuickBasic 4.5.
 
 ![screenshot; shows the rainbow flag and asks if it's the rainbow, intersex or pansexual flag](snap.png)
 
@@ -26,10 +26,13 @@ Original aspect ratio in parentheses.
 * [aromantic](https://commons.wikimedia.org/wiki/File:Aromantic_Pride_Flag.svg) (5:3)
 * [asexual](https://commons.wikimedia.org/wiki/File:Asexual_Pride_Flag.svg) (5:3)
 * [bisexual](https://commons.wikimedia.org/wiki/File:Bisexual_Pride_Flag.svg) (5:3)
+* [gay men](https://commons.wikimedia.org/wiki/File:5-striped_New_Gay_Male_Pride_Flag.svg) (5:3)
 * [intersex](https://commons.wikimedia.org/wiki/File:Intersex_Pride_Flag.svg) (3:2)
 * [lesbian](https://commons.wikimedia.org/wiki/File:Lesbian_Pride_Flag_2019.svg) (16:9)
 * [nonbinary](https://commons.wikimedia.org/wiki/File:Nonbinary_flag.svg) (3:2)
+* [omnisexual](https://commons.wikimedia.org/wiki/File:Omnisexuality_flag.svg) (5:3)
 * [pansexual](https://commons.wikimedia.org/wiki/File:Pansexuality_Pride_Flag.svg) (5:3)
+* [polysexual](https://commons.wikimedia.org/wiki/File:Polysexuality_Pride_Flag.svg) (5:3)
 * [rainbow](https://commons.wikimedia.org/wiki/File:Gay_Pride_Flag.svg) (13:8 or more precisely 259:160)
 * [transgender](https://commons.wikimedia.org/wiki/File:Transgender_Pride_flag.svg) (5:3)
 
