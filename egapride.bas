@@ -112,19 +112,19 @@ CALL titlescreen
 k$ = getchoice$(" Q")
 IF k$ = "Q" THEN SCREEN 0: END
 
-' get correct answers (all different)
-FOR i = 0 TO ROUNDCNT - 1
-    DO
-        corranswers(i) = INT(RND * flagcount)
-        inuse = 0
-        FOR j = 0 TO i - 1
-            IF corranswers(j) = corranswers(i) THEN inuse = 1: EXIT FOR
-        NEXT
-    LOOP WHILE inuse
-NEXT
-
 DO
     ' main loop
+
+    ' get correct answers (all different)
+    FOR i = 0 TO ROUNDCNT - 1
+        DO
+            corranswers(i) = INT(RND * flagcount)
+            inuse = 0
+            FOR j = 0 TO i - 1
+                IF corranswers(j) = corranswers(i) THEN inuse = 1: EXIT FOR
+            NEXT
+        LOOP WHILE inuse
+    NEXT
 
     ' run quiz rounds
     score = 0
@@ -157,7 +157,7 @@ DO
         s$ = "High score: " + formatratio(highscore, ROUNDCNT)
         CALL printcentered(s$, 6)
     END IF
-   
+
     CALL printcentered("Space = new game", 8)
     CALL printcentered("    Q = quit    ", 9)
     DO: k$ = UCASE$(INPUT$(1)): LOOP UNTIL k$ = " " OR k$ = "Q"
@@ -166,7 +166,6 @@ LOOP
 
 SCREEN 0
 
-DEFSNG A-Z
 FUNCTION deletespaces$ (old$)
 ' delete spaces from the string
 DEFINT A-Z
@@ -180,7 +179,6 @@ deletespaces$ = new$
 
 END FUNCTION
 
-DEFSNG A-Z
 SUB drawflag (drawcommands$)
 ' Draw a flag by Draw Commands.
 '   Draw Commands = a string with zero or more Blocks
@@ -256,7 +254,6 @@ WEND
 
 END SUB
 
-DEFSNG A-Z
 FUNCTION formatratio$ (a%, b%)
 ' e.g. formatratio$(2, 5) = "2/5"
 DEFINT A-Z
@@ -265,7 +262,6 @@ formatratio$ = LTRIM$(STR$(a%)) + "/" + LTRIM$(STR$(b%))
 
 END FUNCTION
 
-DEFSNG A-Z
 FUNCTION getchoice$ (choices$)
 ' wait until user presses one of the specified keys (must be in UPPER CASE)
 DEFINT A-Z
@@ -277,7 +273,6 @@ getchoice$ = k$
 
 END FUNCTION
 
-DEFSNG A-Z
 SUB printbottomtext (text$)
 ' print a string on lines 24-25
 DEFINT A-Z
@@ -289,7 +284,6 @@ NEXT
 
 END SUB
 
-DEFSNG A-Z
 SUB printcentered (text$, y%)
 ' print centered text
 DEFINT A-Z
@@ -299,7 +293,6 @@ PRINT text$
 
 END SUB
 
-DEFSNG A-Z
 SUB printgradtext (text$, y%)
 ' print centered gradient text
 DEFINT A-Z
@@ -320,7 +313,6 @@ NEXT
 COLOR 7: PRINT
 END SUB
 
-DEFSNG A-Z
 SUB readflagdata
 ' read flag data
 DEFINT A-Z
@@ -342,7 +334,6 @@ LOOP
 
 END SUB
 
-DEFSNG A-Z
 FUNCTION runround% (correct%)
 ' Run one round of the quiz. Return 1 if correct, 0 if incorrect.
 ' correct%: correct answer (index to names$, drawcommands$)
@@ -398,7 +389,6 @@ k$ = INPUT$(1)
 
 END FUNCTION
 
-DEFSNG A-Z
 SUB titlescreen
 ' print title screen
 DEFINT A-Z
