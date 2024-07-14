@@ -34,28 +34,6 @@ DIM corranswers(ROUNDCNT - 1)  ' correct answers
 '   "-" as command = end this flag's data
 '   "-" as name    = end all flag data
 ' Note: preprocessing removes spaces from commands.
-DATA polyamory
-' horizontal stripes (3 rectangles)
-DATA RE 072 248 000 060 009
-DATA DR 072 248 000 060 011
-DATA RE 072 248 060 060 012
-DATA HR 120 060 000
-DATA DH 120 060 005
-' white (1 rectangle, 2 triangles)
-DATA RE 000 072 000 120 015
-DATA TR 072 000 144 060 072 119 015
-DATA FI 073 060 015
-DATA TR 000 120 072 120 000 179 015
-DATA FI 001 121 015
-' heart (2 circles, 1 triangle)
-DATA CI 050 045 023 012
-DATA FI 050 045 012
-DATA CI 050 075 023 012
-DATA FI 050 075 012
-DATA TR 062 028 103 060 062 092 012
-DATA FI 100 060 012
-DATA DF 100 060
-DATA -
 DATA aromantic
 DATA HR 000 036 002
 DATA HR 036 036 010
@@ -129,6 +107,28 @@ DATA pansexual
 DATA HR 000 060 012
 DATA HR 060 060 014
 DATA HR 120 060 011
+DATA -
+DATA polyamory
+' horizontal stripes (3 rectangles)
+DATA RE 072 248 000 060 009
+DATA DR 072 248 000 060 011
+DATA RE 072 248 060 060 012
+DATA HR 120 060 000
+DATA DH 120 060 005
+' white (1 rectangle, 2 triangles)
+DATA RE 000 072 000 120 015
+DATA TR 072 000 144 060 072 119 015
+DATA FI 073 060 015
+DATA TR 000 120 072 120 000 179 015
+DATA FI 001 121 015
+' heart (2 circles, 1 triangle)
+DATA CI 050 045 023 012
+DATA FI 050 045 012
+DATA CI 050 075 023 012
+DATA FI 050 075 012
+DATA TR 062 028 103 060 062 092 012
+DATA FI 100 060 012
+DATA DF 100 060
 DATA -
 DATA polysexual
 DATA HR 000 060 013
@@ -217,7 +217,7 @@ DO
 
     CALL printcentered("Space = new game", 8)
     CALL printcentered("    Q = quit    ", 9)
-    DO: k$ = UCASE$(INPUT$(1)): LOOP UNTIL k$ = " " OR k$ = "Q"
+    k$ = getchoice$(" Q")
     IF k$ = "Q" THEN EXIT DO
 LOOP
 
@@ -337,6 +337,7 @@ FUNCTION getchoice$ (choices$)
 ' wait until user presses one of the specified keys (must be in UPPER CASE)
 DEFINT A-Z
 
+DO: LOOP UNTIL INKEY$ = ""
 DO
     k$ = UCASE$(INPUT$(1))
 LOOP UNTIL INSTR(choices$, k$)
@@ -437,25 +438,22 @@ NEXT
 quest$ = quest$ + "Q=quit?"
 CALL printbottomtext(quest$)
 
-' ask for choice
-validchoices$ = LEFT$("123456789", CHOICECNT) + "Q"
-DO
-    choice$ = UCASE$(INPUT$(1))
-LOOP UNTIL INSTR(validchoices$, choice$)
+choice$ = getchoice$(LEFT$("123456789", CHOICECNT) + "Q")
 
 ' react to choice
 IF choice$ = "Q" THEN
     SCREEN 0: END
 ELSEIF choices(VAL(choice$) - 1) = correct THEN
-    CALL printbottomtext("Correct. Press any key for the next flag.")
+    CALL printbottomtext("Correct. Press any key to continue.")
     runround% = 1
 ELSE
-    s$ = "No, that was the " + names$(correct) + " flag. Press any key for "
-    s$ = s$ + "the next flag."
+    s$ = "No, that was the " + names$(correct) + " flag. Press any key to "
+    s$ = s$ + "continue."
     CALL printbottomtext(s$)
     runround% = 0
 END IF
 
+DO: LOOP UNTIL INKEY$ = ""
 k$ = INPUT$(1)
 
 END FUNCTION
