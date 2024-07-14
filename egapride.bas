@@ -22,60 +22,92 @@ DIM corranswers(ROUNDCNT - 1)  ' correct answers
 
 ' Flag data (name followed by draw commands).
 ' Commands and arguments (see drawflag sub for details):
-'   FH h         = set Flag Height
-'   HR y h c     = Horizontal Rectangle
-'   DH y h c     = Dithered Horizontal rectangle
-'   VR x w c     = Vertical Rectangle
-'   RE x w y h c = REctangle
-'   CC r c       = Centered Circle
+'   HRyhc     = filled   Horizontal Rectangle (full width)
+'   DHyhc     = Dithered Horizontal rectangle (full width, transparent)
+'   RExwyhc   = filled   arbitrary  REctangle
+'   DRxwyhc   = Dithered arbitrary  Rectangle (transparent)
+'   TRxyxyxyc = TRiangle
+'   CIxyrc    = CIrcle
+'   FIxyc     = flood FIll, stop at fill color
+'   DFxy      = Dithered light red/yellow flood Fill, stop at white
 ' Terminators:
 '   "-" as command = end this flag's data
 '   "-" as name    = end all flag data
 ' Note: preprocessing removes spaces from commands.
-DATA aromantic, FH 160
-DATA HR 000 032 002
-DATA HR 032 032 010
-DATA HR 064 032 015
-DATA HR 096 032 007
-DATA HR 128 032 000
+DATA polyamory
+' horizontal stripes (3 rectangles)
+DATA RE 072 248 000 060 009
+DATA DR 072 248 000 060 011
+DATA RE 072 248 060 060 012
+DATA HR 120 060 000
+DATA DH 120 060 005
+' white (1 rectangle, 2 triangles)
+DATA RE 000 072 000 120 015
+DATA TR 072 000 144 060 072 119 015
+DATA FI 073 060 015
+DATA TR 000 120 072 120 000 179 015
+DATA FI 001 121 015
+' heart (2 circles, 1 triangle)
+DATA CI 050 045 023 012
+DATA FI 050 045 012
+DATA CI 050 075 023 012
+DATA FI 050 075 012
+DATA TR 062 028 103 060 062 092 012
+DATA FI 100 060 012
+DATA DF 100 060
 DATA -
-DATA asexual, FH 160
-DATA HR 000 040 000
-DATA HR 040 040 008
-DATA HR 080 040 015
-DATA HR 120 040 005
+DATA aromantic
+DATA HR 000 036 002
+DATA HR 036 036 010
+DATA HR 072 036 015
+DATA HR 108 036 007
+DATA HR 144 036 000
 DATA -
-DATA bisexual, FH 160
-DATA HR 000 064 004
-DATA DH 000 064 005
-DATA HR 064 032 008
-DATA DH 064 032 013
-DATA HR 096 064 009
+DATA asexual
+DATA HR 000 045 000
+DATA HR 045 045 008
+DATA HR 090 045 015
+DATA HR 135 045 005
 DATA -
-DATA gay men, FH 160
-DATA HR 000 032 002
-DATA HR 032 032 010
-DATA HR 064 032 015
-DATA HR 096 032 009
-DATA DH 096 032 011
-DATA HR 128 032 001
-DATA DH 128 032 005
+DATA bisexual
+DATA HR 000 072 004
+DATA DH 000 072 005
+DATA HR 072 036 008
+DATA DH 072 036 013
+DATA HR 108 072 009
 DATA -
-DATA intersex, FH 178
-DATA HR 000 177 014
-DATA CC 061 005
-DATA CC 044 014
+DATA demisexual
+DATA HR 000 075 015
+DATA HR 075 030 005
+DATA HR 105 075 007
+DATA TR 000 000 120 090 000 179 000
+DATA FI 001 090 000
 DATA -
-DATA lesbian, FH 150
-DATA HR 000 030 004
-DATA HR 030 030 012
-DATA DH 030 030 014
-DATA HR 060 030 015
-DATA HR 090 030 008
-DATA DH 090 030 013
-DATA HR 120 030 005
+DATA gay men
+DATA HR 000 036 002
+DATA HR 036 036 010
+DATA HR 072 036 015
+DATA HR 108 036 009
+DATA DH 108 036 011
+DATA HR 144 036 001
+DATA DH 144 036 005
 DATA -
-DATA nonbinary, FH 180
+DATA intersex
+DATA HR 000 180 014
+DATA CI 160 090 061 005
+DATA CI 160 090 045 005
+DATA FI 160 045 005
+DATA -
+DATA lesbian
+DATA HR 000 036 004
+DATA HR 036 036 012
+DATA DH 036 036 014
+DATA HR 072 036 015
+DATA HR 108 036 008
+DATA DH 108 036 013
+DATA HR 144 036 005
+DATA -
+DATA nonbinary
 DATA HR 000 045 014
 DATA HR 045 045 015
 DATA HR 090 045 009
@@ -83,41 +115,42 @@ DATA DH 090 045 013
 DATA HR 135 045 000
 DATA DH 135 045 008
 DATA -
-DATA omnisexual, FH 160
-DATA HR 000 032 012
-DATA DH 000 032 015
-DATA HR 032 032 012
-DATA HR 064 032 000
-DATA HR 096 032 009
-DATA HR 128 032 009
-DATA DH 128 032 015
+DATA omnisexual
+DATA HR 000 036 012
+DATA DH 000 036 015
+DATA HR 036 036 012
+DATA HR 072 036 000
+DATA DH 072 036 005
+DATA HR 108 036 009
+DATA HR 144 036 009
+DATA DH 144 036 015
 DATA -
-DATA pansexual, FH 159
-DATA HR 000 053 012
-DATA HR 053 053 014
-DATA HR 106 053 011
+DATA pansexual
+DATA HR 000 060 012
+DATA HR 060 060 014
+DATA HR 120 060 011
 DATA -
-DATA polysexual, FH 159
-DATA HR 000 053 013
-DATA HR 053 053 010
-DATA HR 106 053 009
-DATA DH 106 053 011
+DATA polysexual
+DATA HR 000 060 013
+DATA HR 060 060 010
+DATA HR 120 060 009
+DATA DH 120 060 011
 DATA -
-DATA rainbow, FH 162
-DATA HR 000 027 012
-DATA HR 027 027 012
-DATA DH 027 027 014
-DATA HR 054 027 014
-DATA HR 081 027 002
-DATA HR 108 027 009
-DATA HR 135 027 005
+DATA rainbow
+DATA HR 000 030 012
+DATA HR 030 030 012
+DATA DH 030 030 014
+DATA HR 060 030 014
+DATA HR 090 030 002
+DATA HR 120 030 009
+DATA HR 150 030 005
 DATA -
-DATA transgender, FH 160
-DATA HR 000 032 011
-DATA HR 032 032 013
-DATA HR 064 032 015
-DATA HR 096 032 013
-DATA HR 128 032 011
+DATA transgender
+DATA HR 000 036 011
+DATA HR 036 036 013
+DATA HR 072 036 015
+DATA HR 108 036 013
+DATA HR 144 036 011
 DATA -
 DATA -
 
@@ -210,66 +243,80 @@ SUB drawflag (drawcommands$)
 '       Command   = "AA"-"ZZ", in UPPER CASE
 '       Argument  = "000"-"999"; count depends on Command
 ' Commands and their Arguments:
-'   FHh     = set Flag Height
-'   HRyhc   = Horizontal Rectangle (full width)
-'   DHyhc   = Dithered Horizontal rectangle (full width)
-'   VRxwc   = Vertical Rectangle (full height)
-'   RExwyhc = REctangle
-'   CCrc    = Centered Circle
+'   HRyhc     = filled   Horizontal Rectangle (full width)
+'   DHyhc     = Dithered Horizontal rectangle (full width, transparent)
+'   RExwyhc   = filled   arbitrary  REctangle
+'   DRxwyhc   = Dithered arbitrary  Rectangle (transparent)
+'   TRxyxyxyc = TRiangle
+'   CIxyrc    = CIrcle
+'   FIxyc     = flood FIll, stop at fill color
+'   DFxy      = Dithered light red/yellow flood Fill, stop at white
 ' Arguments:
 '   x, y = X position, Y position
 '   w, h = Width, Height
 '   r    = Radius
 '   c    = Color
-' Notes:
-'   - flag width is always 320
-'   - all shapes are filled (may not work if background isn't one-color)
+' Note: flag width is always 320.
 
 DEFINT A-Z
-DIM args(4)  ' Arguments
+DIM args(6)  ' Arguments
 
-fw = 320: fh = 200  ' default flag size
-
-i = 1
-WHILE i < LEN(drawcommands$)
+dci = 1
+WHILE dci < LEN(drawcommands$)
     ' Command
-    c$ = MID$(drawcommands$, i, 2)
-    i = i + 2
+    c$ = MID$(drawcommands$, dci, 2)
+    dci = dci + 2
 
     ' number of Arguments
     SELECT CASE c$
-        CASE "FH": argc = 1
-        CASE "CC": argc = 2
-        CASE "HR", "DH", "VR": argc = 3
-        CASE "RE": argc = 5
+        CASE "DF": argc = 2
+        CASE "HR", "DH", "FI": argc = 3
+        CASE "CI": argc = 4
+        CASE "RE", "DR": argc = 5
+        CASE "TR": argc = 7
         CASE ELSE: PRINT "Unknown draw command: "; c$: END
     END SELECT
 
     ' Arguments
     FOR j = 0 TO argc - 1
-        args(j) = VAL(MID$(drawcommands$, i, 3))
-        i = i + 3
+        args(j) = VAL(MID$(drawcommands$, dci, 3))
+        dci = dci + 3
     NEXT
 
     ' execute Command
-    IF c$ = "FH" THEN
-        fh = args(0)
-    ELSEIF c$ = "HR" THEN
-        LINE (0, args(0))-(fw - 1, args(0) + args(1) - 1), args(2), BF
+    IF c$ = "HR" THEN
+        LINE (0, args(0))-(319, args(0) + args(1) - 1), args(2), BF
     ELSEIF c$ = "DH" THEN
-        FOR y = args(0) TO args(0) + args(1) - 1 STEP 2
-            LINE (0, y)-(fw, y), args(2), , &H5555
-            LINE (0, y + 1)-(fw, y + 1), args(2), , &HAAAA
+        FOR y = args(0) TO args(0) + args(1) - 1
+            IF (y AND 1) THEN pattern = &H5555 ELSE pattern = &HAAAA
+            LINE (0, y)-(319, y), args(2), , pattern
         NEXT
-    ELSEIF c$ = "VR" THEN
-        LINE (args(0), 0)-(args(0) + args(1) - 1, fh - 1), args(2), BF
     ELSEIF c$ = "RE" THEN
         x2 = args(0) + args(1) - 1
         y2 = args(2) + args(3) - 1
-        LINE (args(0), x2)-(args(2), y2), args(4), BF
-    ELSEIF c$ = "CC" THEN
-        CIRCLE (fw \ 2, fh \ 2), args(0), args(1)
-        PAINT (fw \ 2, fh \ 2), args(1)
+        LINE (args(0), args(2))-(x2, y2), args(4), BF
+    ELSEIF c$ = "DR" THEN
+        x2 = args(0) + args(1) - 1
+        FOR y = args(2) TO args(2) + args(3) - 1
+            IF (y AND 1) THEN pattern = &H5555 ELSE pattern = &HAAAA
+            LINE (args(0), y)-(x2, y), args(4), , pattern
+        NEXT
+    ELSEIF c$ = "TR" THEN
+        LINE (args(0), args(1))-(args(2), args(3)), args(6)
+        LINE -(args(4), args(5)), args(6)
+        LINE -(args(0), args(1)), args(6)
+    ELSEIF c$ = "CI" THEN
+        CIRCLE (args(0), args(1)), args(2), args(3)
+    ELSEIF c$ = "FI" THEN
+        PAINT (args(0), args(1)), args(2)
+    ELSEIF c$ = "DF" THEN
+        ' pattern (r = light red = &HC, y = yellow = &HE)
+        '   ryryryry
+        '   yryryryr
+        ' byte = 8*1 px of one bitplane
+        pattern$ = CHR$(0) + CHR$(&H55) + CHR$(255) + CHR$(255)
+        pattern$ = pattern$ + CHR$(0) + CHR$(&HAA) + CHR$(255) + CHR$(255)
+        PAINT (args(0), args(1)), pattern$, 15
     ELSE
         PRINT "Unknown draw command: "; c$
         END
