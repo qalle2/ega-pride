@@ -36,7 +36,5 @@ When the 320x200 mode is shown at 4:3 aspect ratio, the pixel aspect ratio is 5:
 * [rainbow](https://commons.wikimedia.org/wiki/File:Gay_Pride_Flag.svg)
 * [transgender](https://commons.wikimedia.org/wiki/File:Transgender_Pride_flag.svg)
 
-polyamory - heart circles: radius 20, Y1 45, Y2 75
-
 ## To do
 * get more flags [here](https://github.com/qalle2/nes-pride) (see "sources of flags")
