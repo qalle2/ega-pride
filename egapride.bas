@@ -23,18 +23,18 @@ DIM SHARED flagcount                    ' how many flags
 DIM corranswers(ROUNDCNT - 1)  ' correct answers
 
 ' Flag data (name followed by draw commands).
+' Try to minimise overdraw.
 ' Commands and arguments (see drawflag sub for details):
-'   HRyhc     = filled   Horizontal Rectangle (full width)
-'   DHyhc     = Dithered Horizontal rectangle (full width, transparent)
-'   RExwyhc   = filled   arbitrary  REctangle
-'   DRxwyhc   = Dithered arbitrary  Rectangle (transparent)
-'   LIxyxyc   = LIne
-'   CLxyc     = Continue Line
-'   TRxyxyxyc = TRiangle
-'   CIxyrc    = CIrcle
-'   ARxyrcaa  = ARc (aa: start angle, end angle)
-'   FIxycc    = flood FIll (cc: fill color, color to stop at)
-'   DFxy      = Dithered light red/yellow flood Fill, stop at white
+'   HRyhc    = filled   Horizontal Rectangle (full width)
+'   DHyhc    = Dithered Horizontal rectangle (full width, transparent)
+'   RExwyhc  = filled   arbitrary  REctangle
+'   DRxwyhc  = Dithered arbitrary  Rectangle (transparent)
+'   LIxyxyc  = LIne
+'   CLxyc    = Continue Line
+'   CIxyrc   = CIrcle
+'   ARxyrcaa = ARc (aa: start angle, end angle)
+'   FIxycc   = flood FIll (cc: fill color, color to stop at)
+'   DFxy     = Dithered light red/yellow flood Fill, stop at white
 ' Terminators:
 '   "-" as command = end this flag's data
 '   "-" as name    = end all flag data
@@ -97,8 +97,9 @@ DATA demisexual
 DATA HR 000 075 015
 DATA HR 075 030 005
 DATA HR 105 075 007
-DATA TR 000 000 120 090 000 179 000
-DATA FI 001 090 000 000
+DATA LI 000 000 137 090 000
+DATA CL 000 179 000
+DATA FI 000 090 000 000
 DATA -
 DATA gay men
 DATA HR 000 036 002
@@ -154,18 +155,15 @@ DATA DR 072 248 000 060 011
 DATA RE 072 248 060 060 012
 DATA HR 120 060 000
 DATA DH 120 060 005
-' white (1 rectangle, 2 triangles)
-DATA RE 000 072 000 120 015
-DATA TR 072 000 144 060 072 119 015
-DATA FI 073 060 015 015
-DATA TR 000 120 072 120 000 179 015
-DATA FI 001 121 015 015
-' heart (2 circles, 1 triangle)
-DATA CI 050 045 023 012
-DATA FI 050 045 012 012
-DATA CI 050 075 023 012
-DATA FI 050 075 012 012
-DATA TR 062 028 103 060 062 092 012
+' white (2 lines)
+DATA LI 072 000 144 060 015
+DATA CL 000 179 015
+DATA FI 000 000 015 015
+' heart (2 arcs, 2 lines)
+DATA AR 050 045 023 012 000 270
+DATA AR 050 075 023 012 090 359
+DATA LI 062 028 103 060 012
+DATA CL 062 092 012
 DATA FI 100 060 012 012
 DATA DF 100 060
 DATA -
@@ -174,6 +172,46 @@ DATA HR 000 060 013
 DATA HR 060 060 010
 DATA HR 120 060 009
 DATA DH 120 060 011
+DATA -
+DATA progressrainbow
+' horizontal stripes
+DATA RE 054 266 000 030 012
+DATA RE 081 239 030 030 012
+DATA DR 081 239 030 030 014
+DATA RE 108 212 060 030 014
+DATA RE 108 212 090 030 010
+DATA RE 081 239 120 030 009
+DATA RE 054 266 150 030 013
+' chevrons are 27 px wide and 23 px tall
+' white triangle
+DATA LI 000 045 054 090 015
+DATA CL 000 135 015
+DATA FI 053 090 015 015
+' pink chevron
+DATA LI 000 045 054 090 013
+DATA CL 000 135 013
+DATA LI 000 022 081 090 013
+DATA CL 000 158 013
+DATA FI 080 090 013 013
+' blue chevron
+DATA LI 000 022 081 090 011
+DATA CL 000 158 011
+DATA LI 000 000 108 090 011
+DATA CL 000 179 011
+DATA FI 107 090 011 011
+' brown chevron
+DATA LI 000 000 108 090 006
+DATA CL 000 179 006
+DATA LI 027 000 135 090 006
+DATA CL 027 179 006
+DATA CL 000 179 006
+DATA FI 134 090 006 006
+' black chevron
+DATA LI 027 000 135 090 000
+DATA CL 027 179 000
+DATA LI 054 000 162 090 000
+DATA CL 054 179 000
+DATA FI 161 090 000 000
 DATA -
 DATA rainbow
 DATA HR 000 030 012
@@ -284,17 +322,16 @@ SUB drawflag (drawcommands$)
 '       Command   = "AA"-"ZZ", in UPPER CASE
 '       Argument  = "000"-"999"; count depends on Command
 ' Commands and their Arguments:
-'   HRyhc     = filled   Horizontal Rectangle (full width)
-'   DHyhc     = Dithered Horizontal rectangle (full width, transparent)
-'   RExwyhc   = filled   arbitrary  REctangle
-'   DRxwyhc   = Dithered arbitrary  Rectangle (transparent)
-'   LIxyxyc   = LIne
-'   CLxyc     = Continue Line
-'   TRxyxyxyc = TRiangle
-'   CIxyrc    = CIrcle
-'   ARxyrcaa  = ARc (aa: start angle, end angle)
-'   FIxycc    = flood FIll (cc: fill color, color to stop at)
-'   DFxy      = Dithered light red/yellow flood Fill, stop at white
+'   HRyhc    = filled   Horizontal Rectangle (full width)
+'   DHyhc    = Dithered Horizontal rectangle (full width, transparent)
+'   RExwyhc  = filled   arbitrary  REctangle
+'   DRxwyhc  = Dithered arbitrary  Rectangle (transparent)
+'   LIxyxyc  = LIne
+'   CLxyc    = Continue Line
+'   CIxyrc   = CIrcle
+'   ARxyrcaa = ARc (aa: start angle, end angle)
+'   FIxycc   = flood FIll (cc: fill color, color to stop at)
+'   DFxy     = Dithered light red/yellow flood Fill, stop at white
 ' Arguments:
 '   x, y = X position, Y position
 '   w, h = Width, Height
@@ -304,7 +341,7 @@ SUB drawflag (drawcommands$)
 ' Note: flag width is always 320.
 
 DEFINT A-Z
-DIM args(6)  ' Arguments
+DIM args(5)  ' Arguments
 
 dci = 1
 WHILE dci < LEN(drawcommands$)
@@ -319,7 +356,6 @@ WHILE dci < LEN(drawcommands$)
         CASE "CI", "FI": argc = 4
         CASE "RE", "DR", "LI": argc = 5
         CASE "AR": argc = 6
-        CASE "TR": argc = 7
         CASE ELSE: PRINT "Unknown draw command: "; c$: END
     END SELECT
 
@@ -351,10 +387,6 @@ WHILE dci < LEN(drawcommands$)
         LINE (args(0), args(1))-(args(2), args(3)), args(4)
     ELSEIF c$ = "CL" THEN
         LINE -(args(0), args(1)), args(2)
-    ELSEIF c$ = "TR" THEN
-        LINE (args(0), args(1))-(args(2), args(3)), args(6)
-        LINE -(args(4), args(5)), args(6)
-        LINE -(args(0), args(1)), args(6)
     ELSEIF c$ = "CI" THEN
         CIRCLE (args(0), args(1)), args(2), args(3)
     ELSEIF c$ = "AR" THEN
