@@ -34,8 +34,9 @@ When the 320x200 mode is shown at 4:3 aspect ratio, the pixel aspect ratio is 5:
 * [pansexual](https://commons.wikimedia.org/wiki/File:Pansexuality_Pride_Flag.svg)
 * [polyamory](https://commons.wikimedia.org/wiki/File:Tricolor_Polyamory_Pride_Flag.svg)
 * [polysexual](https://commons.wikimedia.org/wiki/File:Polysexuality_Pride_Flag.svg)
-* [progressrainbow](https://commons.wikimedia.org/wiki/File:LGBTQ%2B_rainbow_flag_Quasar_%22Progress%22_variant.svg)
 * [rainbow](https://commons.wikimedia.org/wiki/File:Gay_Pride_Flag.svg)
+* [rainbowprogress](https://commons.wikimedia.org/wiki/File:LGBTQ%2B_rainbow_flag_Quasar_%22Progress%22_variant.svg)
+* [rainbowprogressintersex](https://commons.wikimedia.org/wiki/File:Intersex-inclusive_pride_flag.svg) (not yet added)
 * [transgender](https://commons.wikimedia.org/wiki/File:Transgender_Pride_flag.svg)
 
 ## To do
