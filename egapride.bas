@@ -13,6 +13,8 @@ DEFINT A-Z
 CONST MAXFLAGS = 20  ' maximum number of flags
 CONST CHOICECNT = 3  ' number of choices
 CONST ROUNDCNT = 10  ' how many rounds
+CONST DEBUGMODE = 0  ' just show the first flag and quit
+CONST PI = 3.141593
 
 DIM SHARED names$(MAXFLAGS - 1)         ' names of flags
 DIM SHARED drawcommands$(MAXFLAGS - 1)  ' commands for drawing flags
@@ -26,9 +28,12 @@ DIM corranswers(ROUNDCNT - 1)  ' correct answers
 '   DHyhc     = Dithered Horizontal rectangle (full width, transparent)
 '   RExwyhc   = filled   arbitrary  REctangle
 '   DRxwyhc   = Dithered arbitrary  Rectangle (transparent)
+'   LIxyxyc   = LIne
+'   CLxyc     = Continue Line
 '   TRxyxyxyc = TRiangle
 '   CIxyrc    = CIrcle
-'   FIxyc     = flood FIll, stop at fill color
+'   ARxyrcaa  = ARc (aa: start angle, end angle)
+'   FIxycc    = flood FIll (cc: fill color, color to stop at)
 '   DFxy      = Dithered light red/yellow flood Fill, stop at white
 ' Terminators:
 '   "-" as command = end this flag's data
@@ -47,6 +52,40 @@ DATA HR 045 045 008
 DATA HR 090 045 015
 DATA HR 135 045 005
 DATA -
+DATA autism
+DATA HR 000 179 012
+DATA DH 000 179 014
+' arcs and lines between them
+DATA AR 106 090 020 015 045 315
+DATA AR 106 090 040 015 045 315
+DATA AR 213 090 020 015 225 135
+DATA AR 213 090 040 015 225 135
+DATA LI 116 105 195 061 015
+DATA LI 126 119 205 075 015
+DATA LI 116 075 195 119 015
+DATA LI 126 061 205 105 015
+' split circles with vertical lines
+DATA LI 106 058 106 072 015
+DATA LI 106 108 106 122 015
+DATA LI 213 058 213 072 015
+DATA LI 213 108 213 122 015
+' fill band from left to right
+DATA FI 085 090 013 015
+DATA FI 107 070 012 015
+DATA FI 107 110 009 015
+DATA FI 159 090 011 015
+DATA FI 212 070 011 015
+DATA FI 212 110 014 015
+DATA FI 234 090 010 015
+' undo vertical lines
+DATA LI 106 058 106 072 013
+DATA LI 106 108 106 122 013
+DATA LI 213 058 213 072 011
+DATA LI 213 108 213 122 014
+' undo diagonal lines on blue part of band
+DATA LI 143 090 159 099 011
+DATA LI 160 080 178 090 011
+DATA -
 DATA bisexual
 DATA HR 000 072 004
 DATA DH 000 072 005
@@ -59,7 +98,7 @@ DATA HR 000 075 015
 DATA HR 075 030 005
 DATA HR 105 075 007
 DATA TR 000 000 120 090 000 179 000
-DATA FI 001 090 000
+DATA FI 001 090 000 000
 DATA -
 DATA gay men
 DATA HR 000 036 002
@@ -74,7 +113,7 @@ DATA intersex
 DATA HR 000 180 014
 DATA CI 160 090 061 005
 DATA CI 160 090 045 005
-DATA FI 160 045 005
+DATA FI 160 045 005 005
 DATA -
 DATA lesbian
 DATA HR 000 036 004
@@ -118,16 +157,16 @@ DATA DH 120 060 005
 ' white (1 rectangle, 2 triangles)
 DATA RE 000 072 000 120 015
 DATA TR 072 000 144 060 072 119 015
-DATA FI 073 060 015
+DATA FI 073 060 015 015
 DATA TR 000 120 072 120 000 179 015
-DATA FI 001 121 015
+DATA FI 001 121 015 015
 ' heart (2 circles, 1 triangle)
 DATA CI 050 045 023 012
-DATA FI 050 045 012
+DATA FI 050 045 012 012
 DATA CI 050 075 023 012
-DATA FI 050 075 012
+DATA FI 050 075 012 012
 DATA TR 062 028 103 060 062 092 012
-DATA FI 100 060 012
+DATA FI 100 060 012 012
 DATA DF 100 060
 DATA -
 DATA polysexual
@@ -165,6 +204,8 @@ highscore = 0
 
 SCREEN 7
 
+IF DEBUGMODE THEN CALL drawflag(drawcommands$(0)): END
+
 CALL titlescreen
 k$ = getchoice$(" Q")
 IF k$ = "Q" THEN SCREEN 0: END
@@ -182,7 +223,7 @@ DO
             NEXT
         LOOP WHILE inuse
     NEXT
-
+  
     ' run quiz rounds
     score = 0
     FOR round = 0 TO ROUNDCNT - 1
@@ -247,15 +288,19 @@ SUB drawflag (drawcommands$)
 '   DHyhc     = Dithered Horizontal rectangle (full width, transparent)
 '   RExwyhc   = filled   arbitrary  REctangle
 '   DRxwyhc   = Dithered arbitrary  Rectangle (transparent)
+'   LIxyxyc   = LIne
+'   CLxyc     = Continue Line
 '   TRxyxyxyc = TRiangle
 '   CIxyrc    = CIrcle
-'   FIxyc     = flood FIll, stop at fill color
+'   ARxyrcaa  = ARc (aa: start angle, end angle)
+'   FIxycc    = flood FIll (cc: fill color, color to stop at)
 '   DFxy      = Dithered light red/yellow flood Fill, stop at white
 ' Arguments:
 '   x, y = X position, Y position
 '   w, h = Width, Height
 '   r    = Radius
 '   c    = Color
+'   a    = angle (degrees CCW from right)
 ' Note: flag width is always 320.
 
 DEFINT A-Z
@@ -270,9 +315,10 @@ WHILE dci < LEN(drawcommands$)
     ' number of Arguments
     SELECT CASE c$
         CASE "DF": argc = 2
-        CASE "HR", "DH", "FI": argc = 3
-        CASE "CI": argc = 4
-        CASE "RE", "DR": argc = 5
+        CASE "HR", "DH", "CL": argc = 3
+        CASE "CI", "FI": argc = 4
+        CASE "RE", "DR", "LI": argc = 5
+        CASE "AR": argc = 6
         CASE "TR": argc = 7
         CASE ELSE: PRINT "Unknown draw command: "; c$: END
     END SELECT
@@ -301,14 +347,22 @@ WHILE dci < LEN(drawcommands$)
             IF (y AND 1) THEN pattern = &H5555 ELSE pattern = &HAAAA
             LINE (args(0), y)-(x2, y), args(4), , pattern
         NEXT
+    ELSEIF c$ = "LI" THEN
+        LINE (args(0), args(1))-(args(2), args(3)), args(4)
+    ELSEIF c$ = "CL" THEN
+        LINE -(args(0), args(1)), args(2)
     ELSEIF c$ = "TR" THEN
         LINE (args(0), args(1))-(args(2), args(3)), args(6)
         LINE -(args(4), args(5)), args(6)
         LINE -(args(0), args(1)), args(6)
     ELSEIF c$ = "CI" THEN
         CIRCLE (args(0), args(1)), args(2), args(3)
+    ELSEIF c$ = "AR" THEN
+        a1! = args(4) * PI / 180
+        a2! = args(5) * PI / 180
+        CIRCLE (args(0), args(1)), args(2), args(3), a1!, a2!
     ELSEIF c$ = "FI" THEN
-        PAINT (args(0), args(1)), args(2)
+        PAINT (args(0), args(1)), args(2), args(3)
     ELSEIF c$ = "DF" THEN
         ' pattern (r = light red = &HC, y = yellow = &HE)
         '   ryryryry

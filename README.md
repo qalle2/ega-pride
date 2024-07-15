@@ -1,5 +1,5 @@
 # ega-pride
-A multiple-choice pride flag quiz. Requires DOS and EGA. Only 14 flags at the moment. Compiled with Microsoft QuickBasic 4.5. Runs in screen 7 (320x200x16).
+A multiple-choice pride flag quiz. Requires DOS and EGA. Only 15 flags at the moment. Compiled with Microsoft QuickBasic 4.5. Runs in screen 7 (320x200x16).
 
 The game can also be downloaded on [itch.io](https://qalle.itch.io/ega-pride).
 
@@ -23,6 +23,7 @@ When the 320x200 mode is shown at 4:3 aspect ratio, the pixel aspect ratio is 5:
 ## Sources of flags
 * [aromantic](https://commons.wikimedia.org/wiki/File:Aromantic_Pride_Flag.svg)
 * [asexual](https://commons.wikimedia.org/wiki/File:Asexual_Pride_Flag.svg)
+* [autism](https://commons.wikimedia.org/wiki/File:Autistic_Pride_Flag.png)
 * [bisexual](https://commons.wikimedia.org/wiki/File:Bisexual_Pride_Flag.svg)
 * [demisexual](https://commons.wikimedia.org/wiki/File:Demisexual_Pride_Flag.svg)
 * [gay men](https://commons.wikimedia.org/wiki/File:5-striped_New_Gay_Male_Pride_Flag.svg)
