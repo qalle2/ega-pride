@@ -10,7 +10,7 @@ DECLARE SUB readflagdata ()
 DECLARE SUB printbottomtext (text$)
 DEFINT A-Z
 
-CONST MAXFLAGS = 30  ' maximum number of flags
+CONST MAXFLAGS = 35  ' maximum number of flags
 CONST CHOICECNT = 3  ' number of choices
 CONST ROUNDCNT = 10  ' how many rounds
 CONST DEBUGMODE = 0  ' just show the first flag and quit
@@ -27,14 +27,14 @@ DIM corranswers(ROUNDCNT - 1)  ' correct answers
 ' Commands and arguments (see drawflag sub for details):
 '   HRyhc    = filled   Horizontal Rectangle (full width)
 '   DHyhc    = Dithered Horizontal rectangle (full width, transparent)
-'   RExwyhc  = filled   arbitrary  REctangle
-'   DRxwyhc  = Dithered arbitrary  Rectangle (transparent)
+'   RExwyhc  = filled   REctangle
+'   DRxwyhc  = Dithered Rectangle (transparent)
 '   LIxyxyc  = LIne
 '   CLxyc    = Continue Line
 '   CIxyrc   = CIrcle
 '   ARxyrcaa = ARc (aa: start angle, end angle)
-'   FIxycc   = flood FIll (cc: fill color, color to stop at)
-'   DFxy     = Dithered light red/yellow flood Fill, stop at white
+'   FIxycc   = FIll          (cc: fill color, color to stop at)
+'   DFxyccc  = Dithered Fill (ccc: color1, color2, color to stop at)
 ' Terminators:
 '   "-" as command = end this flag's data
 '   "-" as name    = end all flag data
@@ -110,6 +110,81 @@ DATA LI 213 108 213 122 014
 ' undo diagonal lines on blue part of band
 DATA LI 143 090 159 099 011
 DATA LI 160 080 178 090 011
+DATA -
+DATA bear
+' stripes
+DATA HR 000 026 006
+DATA HR 026 078 014
+DATA DH 026 026 012
+DATA DH 078 026 015
+DATA HR 104 026 015
+DATA HR 130 026 008
+DATA HR 156 026 000
+' pawprint - largest part
+DATA LI 059 033 076 033 000
+DATA CL 096 043 000
+DATA CL 106 043 000
+DATA CL 118 037 000
+DATA CL 125 037 000
+DATA CL 131 043 000
+DATA CL 131 046 000
+DATA CL 121 056 000
+DATA CL 091 071 000
+DATA CL 071 091 000
+DATA CL 063 091 000
+DATA CL 060 088 000
+DATA CL 060 060 000
+DATA CL 048 048 000
+DATA CL 048 044 000
+DATA CL 059 033 000
+DATA FI 060 034 000 000
+' pawprint - 1st small part from left
+DATA LI 031 073 042 073 000
+DATA CL 052 078 000
+DATA CL 052 087 000
+DATA CL 050 089 000
+DATA CL 046 089 000
+DATA CL 038 085 000
+DATA CL 031 078 000
+DATA CL 031 073 000
+DATA FI 032 074 000 000
+' pawprint - 2nd small part from left
+DATA LI 027 049 034 049 000
+DATA CL 050 057 000
+DATA CL 050 064 000
+DATA CL 047 067 000
+DATA CL 037 067 000
+DATA CL 027 057 000
+DATA CL 027 049 000
+DATA FI 028 050 000 000
+' pawprint - 3rd small part from left
+DATA LI 026 023 037 023 000
+DATA CL 051 030 000
+DATA CL 051 036 000
+DATA CL 045 042 000
+DATA CL 042 042 000
+DATA CL 034 038 000
+DATA CL 026 030 000
+DATA CL 026 023 000
+DATA FI 027 024 000 000
+' pawprint - 4th small part from left
+DATA LI 048 013 068 013 000
+DATA CL 076 017 000
+DATA CL 076 025 000
+DATA CL 072 029 000
+DATA CL 065 029 000
+DATA CL 043 018 000
+DATA CL 048 013 000
+DATA FI 049 014 000 000
+' pawprint - 5th small part from left
+DATA LI 085 019 095 019 000
+DATA CL 111 027 000
+DATA CL 111 035 000
+DATA CL 107 039 000
+DATA CL 101 039 000
+DATA CL 085 031 000
+DATA CL 085 019 000
+DATA FI 086 020 000 000
 DATA -
 DATA bigender
 DATA HR 000 052 013
@@ -192,6 +267,20 @@ DATA CI 160 090 061 005
 DATA CI 160 090 045 005
 DATA FI 160 045 005 005
 DATA -
+DATA leather
+' stripes
+DATA HR 020 020 009
+DATA HR 060 020 009
+DATA HR 080 020 015
+DATA HR 100 020 009
+DATA HR 140 020 009
+' heart
+DATA AR 086 024 024 004 330 200
+DATA AR 050 046 024 004 045 290
+DATA LI 110 024 106 075 004
+DATA CL 050 066 004
+DATA FI 105 074 004 004
+DATA -
 DATA lesbian
 DATA HR 000 036 004
 DATA HR 036 036 012
@@ -208,6 +297,93 @@ DATA HR 090 045 009
 DATA DH 090 045 013
 DATA HR 135 045 000
 DATA DH 135 045 008
+DATA -
+DATA nonhuman
+' stripes
+DATA HR 000 060 002
+DATA HR 060 060 015
+DATA HR 120 060 001
+DATA DH 120 060 005
+' white circle
+DATA CI 160 095 073 015
+DATA FI 160 050 015 015
+DATA FI 160 125 015 015
+' black circle
+DATA CI 160 095 043 000
+DATA CI 160 095 050 000
+DATA FI 204 095 000 000
+' outer edges of heptagram, clockwise from top
+DATA LI 163 059 169 078 000
+DATA CL 191 069 000
+DATA LI 195 074 180 090 000
+DATA CL 203 100 000
+DATA LI 202 105 176 105 000
+DATA CL 183 126 000
+DATA LI 176 129 159 112 000
+DATA CL 143 129 000
+DATA LI 136 126 143 105 000
+DATA CL 117 105 000
+DATA LI 116 099 139 090 000
+DATA CL 123 074 000
+DATA LI 128 069 150 079 000
+DATA CL 156 058 000
+' quadrilaterals around central heptagon, clockwise from top
+DATA LI 160 069 163 082 000
+DATA CL 160 084 000
+DATA CL 156 082 000
+DATA CL 159 069 000
+DATA LI 182 079 175 088 000
+DATA CL 171 087 000
+DATA CL 170 084 000
+DATA CL 182 079 000
+DATA LI 190 101 175 101 000
+DATA CL 174 098 000
+DATA CL 176 094 000
+DATA CL 190 101 000
+DATA LI 173 118 163 108 000
+DATA CL 165 105 000
+DATA CL 170 105 000
+DATA CL 173 118 000
+DATA LI 145 118 148 105 000
+DATA CL 153 105 000
+DATA CL 155 108 000
+DATA CL 145 118 000
+DATA LI 129 100 142 094 000
+DATA CL 145 097 000
+DATA CL 143 101 000
+DATA CL 129 100 000
+DATA LI 137 079 149 084 000
+DATA CL 147 087 000
+DATA CL 144 088 000
+DATA CL 137 080 000
+' inner edges of heptagram (central heptagon)
+DATA LI 160 088 166 090 000
+DATA CL 167 096 000
+DATA CL 162 101 000
+DATA CL 156 101 000
+DATA CL 151 096 000
+DATA CL 153 090 000
+DATA CL 159 088 000
+' fill heptagram
+DATA FI 160 060 000 000
+' edges of triangle
+DATA LI 160 037 218 125 000
+DATA CL 101 125 000
+DATA CL 159 037 000
+DATA LI 160 046 208 121 000
+DATA CL 111 121 000
+DATA CL 159 046 000
+' fill triangle, clockwise from top
+DATA FI 160 038 000 000
+DATA FI 175 065 000 000
+DATA FI 190 090 000 000
+DATA FI 217 124 000 000
+DATA FI 185 122 000 000
+DATA FI 160 124 000 000
+DATA FI 135 122 000 000
+DATA FI 103 124 000 000
+DATA FI 130 090 000 000
+DATA FI 145 065 000 000
 DATA -
 DATA omnisexual
 DATA HR 000 036 012
@@ -241,7 +417,7 @@ DATA AR 050 075 023 012 090 359
 DATA LI 062 028 103 060 012
 DATA CL 062 092 012
 DATA FI 100 060 012 012
-DATA DF 100 060
+DATA DF 100 060 012 014 015
 DATA -
 DATA polysexual
 DATA HR 000 060 013
@@ -288,11 +464,9 @@ DATA LI 000 045 054 090 015
 DATA CL 000 135 015
 DATA FI 053 090 015 015
 ' pink chevron
-DATA LI 000 045 054 090 013
-DATA CL 000 135 013
-DATA LI 000 022 081 090 013
-DATA CL 000 158 013
-DATA FI 080 090 013 013
+DATA LI 000 022 081 090 015
+DATA CL 000 158 015
+DATA DF 080 090 012 015 015
 ' blue chevron
 DATA LI 000 022 081 090 011
 DATA CL 000 158 011
@@ -334,12 +508,11 @@ DATA LI 000 000 102 090 015
 DATA CL 000 179 015
 DATA FI 101 090 015 015
 ' pink chevron
-DATA LI 000 000 102 090 013
-DATA CL 000 179 013
-DATA LI 022 000 124 090 013
-DATA CL 022 179 013
-DATA CL 000 179 013
-DATA FI 123 090 013 013
+DATA LI 022 000 124 090 015
+DATA CL 022 179 015
+DATA LI 000 180 022 180 015
+DATA DF 123 090 012 015 015
+DATA LI 000 180 022 180 000
 ' cyan chevron
 DATA LI 022 000 124 090 011
 DATA CL 022 179 011
@@ -467,14 +640,14 @@ SUB drawflag (drawcommands$)
 ' Commands and their Arguments:
 '   HRyhc    = filled   Horizontal Rectangle (full width)
 '   DHyhc    = Dithered Horizontal rectangle (full width, transparent)
-'   RExwyhc  = filled   arbitrary  REctangle
-'   DRxwyhc  = Dithered arbitrary  Rectangle (transparent)
+'   RExwyhc  = filled   REctangle
+'   DRxwyhc  = Dithered Rectangle (transparent)
 '   LIxyxyc  = LIne
 '   CLxyc    = Continue Line
 '   CIxyrc   = CIrcle
 '   ARxyrcaa = ARc (aa: start angle, end angle)
-'   FIxycc   = flood FIll (cc: fill color, color to stop at)
-'   DFxy     = Dithered light red/yellow flood Fill, stop at white
+'   FIxycc   = FIll          (cc: fill color, color to stop at)
+'   DFxyccc  = Dithered Fill (ccc: color1, color2, color to stop at)
 ' Arguments:
 '   x, y = X position, Y position
 '   w, h = Width, Height
@@ -494,10 +667,9 @@ WHILE dci < LEN(drawcommands$)
 
     ' number of Arguments
     SELECT CASE c$
-        CASE "DF": argc = 2
         CASE "HR", "DH", "CL": argc = 3
         CASE "CI", "FI": argc = 4
-        CASE "RE", "DR", "LI": argc = 5
+        CASE "RE", "DR", "LI", "DF": argc = 5
         CASE "AR": argc = 6
         CASE ELSE: PRINT "Unknown draw command: "; c$: END
     END SELECT
@@ -539,13 +711,22 @@ WHILE dci < LEN(drawcommands$)
     ELSEIF c$ = "FI" THEN
         PAINT (args(0), args(1)), args(2), args(3)
     ELSEIF c$ = "DF" THEN
-        ' pattern (r = light red = &HC, y = yellow = &HE)
-        '   ryryryry
-        '   yryryryr
-        ' byte = 8*1 px of one bitplane
-        pattern$ = CHR$(0) + CHR$(&H55) + CHR$(255) + CHR$(255)
-        pattern$ = pattern$ + CHR$(0) + CHR$(&HAA) + CHR$(255) + CHR$(255)
-        PAINT (args(0), args(1)), pattern$, 15
+        ' pattern = 8*2 pixels = 8 bytes;
+        ' byte = 8*1 px of one bitplane; 4 bytes = B/G/R/intensity
+        pattern$ = STRING$(8, &H0)
+        FOR i = 0 TO 3
+            pow = 2 ^ i
+            b1set = (args(2) AND pow) > 0
+            b2set = (args(3) AND pow) > 0
+            IF b1set AND b2set THEN
+                MID$(pattern$, i + 1, 1) = CHR$(&HFF)
+                MID$(pattern$, i + 5, 1) = CHR$(&HFF)
+            ELSEIF b1set OR b2set THEN
+                MID$(pattern$, i + 1, 1) = CHR$(&H55)
+                MID$(pattern$, i + 5, 1) = CHR$(&HAA)
+            END IF
+        NEXT
+        PAINT (args(0), args(1)), pattern$, args(4)
     ELSE
         PRINT "Unknown draw command: "; c$
         END
@@ -618,10 +799,13 @@ SUB readflagdata
 ' read flag data
 DEFINT A-Z
 
+PRINT "Reading flag data..."
+
 flagcount = 0
 DO
     READ item$  ' name or final terminator
     IF item$ = "-" THEN EXIT DO
+    IF flagcount = MAXFLAGS THEN PRINT "Please increase MAXFLAGS.": END
     names$(flagcount) = item$
     drawcom$ = ""
     DO

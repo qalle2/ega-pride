@@ -1,5 +1,5 @@
 # ega-pride
-A multiple-choice pride flag quiz. Requires DOS and EGA. There are 27 flags at the moment. Compiled with Microsoft QuickBasic 4.5. Runs in screen 7 (320x200x16).
+A multiple-choice pride flag quiz. Requires DOS and EGA. There are 30 flags at the moment. Compiled with Microsoft QuickBasic 4.5. Runs in screen 7 (320x200x16).
 
 The game can also be downloaded on [itch.io](https://qalle.itch.io/ega-pride).
 
@@ -27,6 +27,7 @@ When the 320x200 mode is shown at 4:3 aspect ratio, the pixel aspect ratio is 5:
 * [aromanticasexual](https://commons.wikimedia.org/wiki/File:Aroace_flag.svg)
 * [asexual](https://commons.wikimedia.org/wiki/File:Asexual_Pride_Flag.svg)
 * [autism](https://commons.wikimedia.org/wiki/File:Autistic_Pride_Flag.png)
+* [bear](https://commons.wikimedia.org/wiki/File:Bear_Brotherhood_flag.svg)
 * [bigender](https://commons.wikimedia.org/wiki/File:Bigender_Flag.svg)
 * [bisexual](https://commons.wikimedia.org/wiki/File:Bisexual_Pride_Flag.svg)
 * [demiboy](https://commons.wikimedia.org/wiki/File:Demiboy_Flag.svg)
@@ -37,8 +38,10 @@ When the 320x200 mode is shown at 4:3 aspect ratio, the pixel aspect ratio is 5:
 * [genderfluid](https://commons.wikimedia.org/wiki/File:Genderfluidity_Pride-Flag.svg)
 * [genderqueer](https://commons.wikimedia.org/wiki/File:Genderqueer_Pride_Flag.svg)
 * [intersex](https://commons.wikimedia.org/wiki/File:Intersex_Pride_Flag.svg)
+* [leather](https://commons.wikimedia.org/wiki/File:Leather,_Latex,_and_BDSM_pride_-_Light.svg)
 * [lesbian](https://commons.wikimedia.org/wiki/File:Lesbian_Pride_Flag_2019.svg)
 * [nonbinary](https://commons.wikimedia.org/wiki/File:Nonbinary_flag.svg)
+* [nonhuman](https://therian.fandom.com/wiki/Non-human_Unity_Flag)
 * [omnisexual](https://commons.wikimedia.org/wiki/File:Omnisexuality_flag.svg)
 * [pansexual](https://commons.wikimedia.org/wiki/File:Pansexuality_Pride_Flag.svg)
 * [polyamory](https://commons.wikimedia.org/wiki/File:Tricolor_Polyamory_Pride_Flag.svg)
