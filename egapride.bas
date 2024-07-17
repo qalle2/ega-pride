@@ -1,7 +1,7 @@
 DECLARE SUB drawflag (drawcommands$)
 DECLARE FUNCTION deletespaces$ (old$)
 DECLARE FUNCTION runround% (correct%)
-DECLARE FUNCTION formatratio$ (a%, B%)
+DECLARE FUNCTION formatratio$ (a%, b%)
 DECLARE FUNCTION getchoice$ (choices$)
 DECLARE SUB printgradtext (text$, y%)
 DECLARE SUB printcentered (text$, y%)
@@ -42,7 +42,6 @@ DIM corranswers(ROUNDCNT - 1)  ' correct answers
 ' Terminators:
 '   "-" as command = end this flag's data
 '   "-" as name    = end all flag data
-' Note: preprocessing removes spaces from commands.
 DATA abrosexual
 DATA HRE,  0,36, 2
 DATA HRE, 36,36,10
@@ -236,6 +235,35 @@ DATA LIN,  0,  0,137,90, 0
 DATA CLI,  0,179,        0
 DATA FIL,  0, 90,        0,0
 DATA -
+DATA disability
+DATA HRE,  0,180,         8
+' 1st stripe from bottom
+DATA LIN,  0, 38,251,179,12
+DATA CLI,215,179,        12
+DATA CLI,  0, 59,        12
+DATA FIL,  0, 39,        12,12
+' 2nd stripe
+DATA LIN,  0, 15,291,179,14
+DATA CLI,252,179,        14
+DATA CLI,  0, 39,        14
+DATA FIL,  0, 16,        14,14
+' 3rd stripe
+DATA LIN, 15,  0,319,172,15
+DATA CLI,319,179,        15
+DATA CLI,291,179,        15
+DATA CLI,  0, 15,        15
+DATA FIL, 15,  1,        15,15
+' 4th stripe
+DATA LIN, 56,  0,319,149,11
+DATA CLI,319,172,        11
+DATA CLI, 15,  0,        11
+DATA FIL, 56,  1,        11,11
+' 5th stripe
+DATA LIN, 97,  0,319,125,10
+DATA CLI,319,149,        10
+DATA CLI, 56,  0,        10
+DATA FIL, 97,  1,        10,10
+DATA -
 DATA gay men
 DATA HRE,  0,36, 2
 DATA HRE, 36,36,10
@@ -376,18 +404,18 @@ DATA FIL,145, 65,0,0
 DATA -
 DATA omnisexual
 DATA DHR,  0,36,12,15
-DATA HRE, 36,36,12
+DATA DHR, 36,36,12,13
 DATA DHR, 72,36, 0, 5
 DATA HRE,108,36, 9
 DATA DHR,144,36, 9,15
 DATA -
 DATA pansexual
-DATA HRE,  0,60,12
+DATA DHR,  0,60,12,13
 DATA HRE, 60,60,14
-DATA HRE,120,60,11
+DATA DHR,120,60, 9,11
 DATA -
 DATA polyamory
-' horizontal stripes (3 rectangles)
+' horizontal stripes
 DATA DRE, 72,248, 0,60, 9,11
 DATA REC, 72,248,60,60,12
 DATA DHR,120, 60,       0, 5
@@ -434,7 +462,7 @@ DATA DRE, 81,239, 30,30,12,14
 DATA REC,108,212, 60,30,14
 DATA REC,108,212, 90,30,10
 DATA REC, 81,239,120,30, 9
-DATA REC, 54,266,150,30,13
+DATA REC, 54,266,150,30, 5
 ' chevrons are 27 px wide and 23 px tall
 ' white triangle
 DATA LIN, 0, 45,54,90,15
@@ -471,7 +499,7 @@ DATA DRE, 81,239, 30,30,12,14
 DATA REC,108,212, 60,30,14
 DATA REC,108,212, 90,30,10
 DATA REC, 81,239,120,30, 9
-DATA REC, 54,266,150,30,13
+DATA REC, 54,266,150,30, 5
 ' chevrons are 22 px wide and 18 px tall
 ' yellow triangle
 DATA LIN, 0, 18,80,90,14
@@ -513,6 +541,79 @@ DATA FIL,169, 90,       0,0
 DATA CIR,30,90,19,5
 DATA CIR,30,90,24,5
 DATA FIL,50,90, 5,5
+DATA -
+DATA sapphic
+' horizontal stripes
+DATA DHR,  0,60,12,15
+DATA HRE, 60,60,15
+DATA DHR,120,60,12,15
+' center of flower
+DATA CIR,160,92,5,12
+DATA FIL,160,92,  12,12
+DATA CIR,160,92,3,14
+DATA FIL,160,92,  14,14
+' top petal
+DATA LIN,153,62,166,62,13
+DATA CLI,170,64,13
+DATA CLI,174,68,13
+DATA CLI,174,75,13
+DATA CLI,164,85,13
+DATA CLI,155,85,13
+DATA CLI,145,75,13
+DATA CLI,145,68,13
+DATA CLI,149,64,13
+DATA CLI,153,62,13
+DATA FIL,153,63,13,13
+' left petal
+DATA LIN,133,78,139,78,13
+DATA CLI,147,82,13
+DATA CLI,152,87,13
+DATA CLI,152,93,13
+DATA CLI,150,95,13
+DATA CLI,132,95,13
+DATA CLI,128,91,13
+DATA CLI,128,83,13
+DATA CLI,133,78,13
+DATA FIL,133,79,13,13
+' right petal
+DATA LIN,187,78,181,78,13
+DATA CLI,173,82,13
+DATA CLI,168,87,13
+DATA CLI,168,93,13
+DATA CLI,170,95,13
+DATA CLI,188,95,13
+DATA CLI,192,91,13
+DATA CLI,192,83,13
+DATA CLI,187,78,13
+DATA FIL,187,79,13,13
+' bottom left petal
+DATA LIN,145, 98,156,98,13
+DATA CLI,158,100,13
+DATA CLI,158,107,13
+DATA CLI,155,113,13
+DATA CLI,154,114,13
+DATA CLI,148,117,13
+DATA CLI,140,117,13
+DATA CLI,136,113,13
+DATA CLI,136,107,13
+DATA CLI,138,103,13
+DATA CLI,141,100,13
+DATA CLI,145, 98,13
+DATA FIL,145, 99,13,13
+' bottom right petal
+DATA LIN,175, 98,164,98,13
+DATA CLI,162,100,13
+DATA CLI,162,107,13
+DATA CLI,165,113,13
+DATA CLI,166,114,13
+DATA CLI,172,117,13
+DATA CLI,180,117,13
+DATA CLI,184,113,13
+DATA CLI,184,107,13
+DATA CLI,182,103,13
+DATA CLI,179,100,13
+DATA CLI,175, 98,13
+DATA FIL,175, 99,13,13
 DATA -
 DATA transgender
 DATA HRE,  0,36,11
@@ -730,11 +831,11 @@ WEND
 
 END SUB
 
-FUNCTION formatratio$ (a%, B%)
+FUNCTION formatratio$ (a%, b%)
 ' e.g. formatratio$(2, 5) = "2/5"
 DEFINT A-Z
 
-formatratio$ = LTRIM$(STR$(a%)) + "/" + LTRIM$(STR$(B%))
+formatratio$ = LTRIM$(STR$(a%)) + "/" + LTRIM$(STR$(b%))
 
 END FUNCTION
 
@@ -807,9 +908,8 @@ DO
     DO
         READ item$  ' Command, Argument or Flag Terminator
         IF item$ = "-" THEN EXIT DO
-        item$ = deletespaces$(item$)
         IF LEFT$(item$, 1) >= "A" AND LEFT$(item$, 1) <= "Z" THEN
-            drawcom$ = drawcom$ + UCASE$(item$)
+            drawcom$ = drawcom$ + item$
         ELSE
             drawcom$ = drawcom$ + MKI$(CINT(VAL(item$)))
         END IF
