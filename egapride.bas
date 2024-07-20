@@ -1,5 +1,4 @@
 DECLARE SUB drawflag (drawcommands$)
-DECLARE FUNCTION deletespaces$ (old$)
 DECLARE FUNCTION runround% (correct%)
 DECLARE FUNCTION formatratio$ (a%, b%)
 DECLARE FUNCTION getchoice$ (choices$)
@@ -8,6 +7,8 @@ DECLARE SUB printcentered (text$, y%)
 DECLARE SUB titlescreen ()
 DECLARE SUB readflagdata ()
 DECLARE SUB printbottomtext (text$)
+DECLARE FUNCTION getgrade$ (score%)
+DECLARE FUNCTION getfillpatt$ (color1%, color2%)
 DEFINT A-Z
 
 CONST MAXFLAGS = 35  ' maximum number of flags
@@ -28,13 +29,13 @@ DIM corranswers(ROUNDCNT - 1)  ' correct answers
 
 ' Flag data (name followed by draw commands).
 ' Try to minimise overdraw.
-' Commands and arguments (see drawflag sub for details):
+' Commands and arguments (see the subs readflagdata, drawflag for details):
+'   LIN xyxyc  = LINe (not rectangle)
+'   CLI xyc    = Continue LIne (from end of previous line)
 '   HRE yhc    = Horizontal REctangle (filled, full width)
 '   DHR yhcc   = Dithered Horizontal Rectangle (filled, full width)
 '   REC xwyhc  = RECtangle (filled)
 '   DRE xwyhcc = Dithered REctangle (filled)
-'   LIN xyxyc  = LINe
-'   CLI xyc    = Continue LIne (from end of previous line)
 '   CIR xyrc   = CIRcle
 '   ARC xyrcaa = ARC (aa: start/end angle)
 '   FIL xycc   = FILl (cc: fill color, color to stop at)
@@ -631,8 +632,6 @@ CALL readflagdata
 IF CHOICECNT > flagcount THEN PRINT "Too many choices.": END
 IF ROUNDCNT > flagcount THEN PRINT "Too many rounds.": END
 
-highscore = 0
-
 SCREEN 7
 
 IF DEBUGMODE = 1 THEN
@@ -641,9 +640,10 @@ ELSEIF DEBUGMODE = 2 THEN
     FOR i = 0 TO flagcount - 1
         CLS
         CALL drawflag(drawcommands$(i))
-        CALL printbottomtext(names$(i))
+        CALL printbottomtext(LTRIM$(STR$(i)) + " " + names$(i))
         DO: LOOP UNTIL INKEY$ = ""
         k$ = INPUT$(1)
+        IF UCASE$(k$) = "Q" THEN END
     NEXT
     END
 END IF
@@ -651,6 +651,8 @@ END IF
 CALL titlescreen
 k$ = getchoice$(" Q")
 IF k$ = "Q" THEN SCREEN 0: END
+
+highscore = 0
 
 DO
     ' main loop
@@ -676,17 +678,7 @@ DO
     CLS
     s$ = "You got " + formatratio(score, ROUNDCNT) + " points."
     CALL printcentered(s$, 3)
-    ' if score >= ROUNDCNT * x/y, then score * y >= ROUNDCNT * x
-    IF score * 10 >= ROUNDCNT * 9 THEN  ' >= 90%
-        grade$ = "Very good!"
-    ELSEIF score * 10 >= ROUNDCNT * 7 THEN  ' >= 70%
-        grade$ = "Good!"
-    ELSEIF score * 10 >= ROUNDCNT * 5 THEN  ' >= 50%
-        grade$ = "An OK score."
-    ELSE
-        grade$ = "Please try again :("
-    END IF
-    CALL printcentered(grade$, 4)
+    CALL printcentered(getgrade$(score), 4)
 
     ' update high score; congratulate if both high score and a good score
     IF score > highscore AND score * 10 >= ROUNDCNT * 7 THEN  ' >= 70%
@@ -706,32 +698,19 @@ LOOP
 
 SCREEN 0
 
-FUNCTION deletespaces$ (old$)
-' delete spaces from the string
-DEFINT A-Z
-
-new$ = ""
-FOR i = 1 TO LEN(old$)
-    c$ = MID$(old$, i, 1)
-    IF c$ <> " " THEN new$ = new$ + c$
-NEXT
-deletespaces$ = new$
-
-END FUNCTION
-
 SUB drawflag (drawcommands$)
 ' Draw a flag by Draw Commands.
 '   Draw Commands = a string with zero or more Blocks
 '     Block       = a Command followed by zero or more Arguments
-'       Command   = "AAA"-"ZZZ", in UPPER CASE
+'       Command   = "AAA"-"ZZZ" in data lines, 2 bytes in RAM
 '       Argument  = integer as 2 bytes; count depends on Command
-' Commands and their Arguments:
+' Commands and their Arguments (see also the readflagdata sub):
+'   LIN xyxyc  = LINe (not rectangle)
+'   CLI xyc    = Continue LIne (from end of previous line)
 '   HRE yhc    = Horizontal REctangle (filled, full width)
 '   DHR yhcc   = Dithered Horizontal Rectangle (filled, full width)
 '   REC xwyhc  = RECtangle (filled)
 '   DRE xwyhcc = Dithered REctangle (filled)
-'   LIN xyxyc  = LINe
-'   CLI xyc    = Continue LIne (from end of previous line)
 '   CIR xyrc   = CIRcle
 '   ARC xyrcaa = ARC (aa: start/end angle)
 '   FIL xycc   = FILl (cc: fill color, color to stop at)
@@ -748,22 +727,18 @@ SUB drawflag (drawcommands$)
 DEFINT A-Z
 DIM args(5)  ' Arguments
 
-dci = 1
+dci = 1  ' index in drawcommands$
+
 WHILE dci < LEN(drawcommands$)
     ' Command
-    c$ = MID$(drawcommands$, dci, 3)
-    dci = dci + 3
+    comm = ASC(MID$(drawcommands$, dci, 1))
+    dci = dci + 1
 
-    ' number of Arguments
-    SELECT CASE c$
-        CASE "HRE", "CLI": argc = 3
-        CASE "DHR", "CIR", "FIL": argc = 4
-        CASE "REC", "LIN", "DFI": argc = 5
-        CASE "DRE", "ARC": argc = 6
-        CASE ELSE: PRINT "Unknown draw command: "; c$: END
-    END SELECT
+    ' separate number of Arguments from Command
+    argc = comm AND &HF
+    comm = comm \ 16
 
-    ' Arguments
+    ' read Arguments
     FOR j = 0 TO argc - 1
         args(j) = CVI(MID$(drawcommands$, dci, 2))
         dci = dci + 2
@@ -774,58 +749,41 @@ WHILE dci < LEN(drawcommands$)
     END IF
 
     ' execute Command
-    IF c$ = "HRE" OR c$ = "DHR" THEN
+    IF comm = 0 THEN   ' LIN
+        LINE (args(0), args(1))-(args(2), args(3)), args(4)
+    ELSEIF comm = 1 THEN  ' CLI
+        LINE -(args(0), args(1)), args(2)
+    ELSEIF comm = 2 OR comm = 3 THEN  ' HRE,DHR
         LINE (0, args(0))-(319, args(0) + args(1) - 1), args(2), BF
-        IF c$ = "DHR" THEN
+        IF comm = 3 THEN  ' DHR
             FOR y = args(0) TO args(0) + args(1) - 1
                 IF (y AND 1) THEN pattern = &H5555 ELSE pattern = &HAAAA
                 LINE (0, y)-(319, y), args(3), , pattern
             NEXT
         END IF
-    ELSEIF c$ = "REC" OR c$ = "DRE" THEN
+    ELSEIF comm = 4 OR comm = 5 THEN  ' REC,DRE
         x2 = args(0) + args(1) - 1
         y2 = args(2) + args(3) - 1
         LINE (args(0), args(2))-(x2, y2), args(4), BF
         LINE (args(0), args(2))-(x2, y2), args(4), BF
-        IF c$ = "DRE" THEN
+        IF comm = 5 THEN  ' DRE
             FOR y = args(2) TO y2
                 IF (y AND 1) THEN pattern = &H5555 ELSE pattern = &HAAAA
                 LINE (args(0), y)-(x2, y), args(5), , pattern
             NEXT
         END IF
-    ELSEIF c$ = "LIN" THEN
-        LINE (args(0), args(1))-(args(2), args(3)), args(4)
-    ELSEIF c$ = "CLI" THEN
-        LINE -(args(0), args(1)), args(2)
-    ELSEIF c$ = "CIR" THEN
+    ELSEIF comm = 6 THEN  ' CIR
         CIRCLE (args(0), args(1)), args(2), args(3)
-    ELSEIF c$ = "ARC" THEN
+    ELSEIF comm = 7 THEN  ' ARC
         a1! = args(4) * PI / 180
         a2! = args(5) * PI / 180
         CIRCLE (args(0), args(1)), args(2), args(3), a1!, a2!
-    ELSEIF c$ = "FIL" THEN
+    ELSEIF comm = 8 THEN  ' FIL
         PAINT (args(0), args(1)), args(2), args(3)
-    ELSEIF c$ = "DFI" THEN
-        ' create fill pattern for 8*2 pixels:
-        '   bytes 1-4 = blue/green/red/intensity of top    8*1 pixels
-        '   bytes 5-8 = blue/green/red/intensity of bottom 8*1 pixels
-        pattern$ = STRING$(8, &H0)
-        FOR i = 0 TO 3
-            pow = 2 ^ i
-            bp1set = (args(2) AND pow) > 0
-            bp2set = (args(3) AND pow) > 0
-            IF bp1set AND bp2set THEN
-                MID$(pattern$, i + 1, 1) = CHR$(&HFF)
-                MID$(pattern$, i + 5, 1) = CHR$(&HFF)
-            ELSEIF bp1set OR bp2set THEN
-                MID$(pattern$, i + 1, 1) = CHR$(&H55)
-                MID$(pattern$, i + 5, 1) = CHR$(&HAA)
-            END IF
-        NEXT
-        PAINT (args(0), args(1)), pattern$, args(4)
+    ELSEIF comm = 9 THEN  ' DFI
+        PAINT (args(0), args(1)), getfillpatt$(args(2), args(3)), args(4)
     ELSE
-        PRINT "Unknown draw command: "; c$
-        END
+        PRINT "Unknown draw command.": END
     END IF
 WEND
 
@@ -849,6 +807,49 @@ DO
     k$ = UCASE$(INPUT$(1))
 LOOP UNTIL INSTR(choices$, k$)
 getchoice$ = k$
+
+END FUNCTION
+
+DEFSNG A-Z
+FUNCTION getfillpatt$ (color1%, color2%)
+' Get a 8*2-pixel fill pattern for the PAINT statement.
+'   bytes 1-4 = blue/green/red/intensity of top    8*1 pixels
+'   bytes 5-8 = blue/green/red/intensity of bottom 8*1 pixels
+DEFINT A-Z
+
+pattern$ = STRING$(8, &H0)
+andmask = 1
+FOR i = 0 TO 3
+    bp1set = (color1 AND andmask) > 0
+    bp2set = (color2 AND andmask) > 0
+    IF bp1set AND bp2set THEN
+        MID$(pattern$, i + 1, 1) = CHR$(&HFF)
+        MID$(pattern$, i + 5, 1) = CHR$(&HFF)
+    ELSEIF bp1set OR bp2set THEN
+        MID$(pattern$, i + 1, 1) = CHR$(&H55)
+        MID$(pattern$, i + 5, 1) = CHR$(&HAA)
+    END IF
+    andmask = andmask * 2
+NEXT
+
+getfillpatt$ = pattern$
+END FUNCTION
+
+DEFSNG A-Z
+FUNCTION getgrade$ (score%)
+' Describe score.
+' If score >= ROUNDCNT * x/y, then score * y >= ROUNDCNT * x.
+DEFINT A-Z
+
+IF score * 10 >= ROUNDCNT * 9 THEN      ' >= 9/10 (90%)
+    getgrade$ = "Very good!"
+ELSEIF score * 10 >= ROUNDCNT * 7 THEN  ' >= 7/10 (70%)
+    getgrade$ = "Good!"
+ELSEIF score * 2 >= ROUNDCNT THEN       ' >= 1/2 (50%)
+    getgrade$ = "An OK score."
+ELSE                                    ' < 50%
+    getgrade$ = "Please try again :("
+END IF
 
 END FUNCTION
 
@@ -892,31 +893,58 @@ NEXT
 COLOR 7: PRINT
 END SUB
 
+DEFSNG A-Z
 SUB readflagdata
 ' read flag data
 DEFINT A-Z
 
-PRINT "Reading flag data..."
+PRINT "Reading flag data...";
 
 flagcount = 0
 DO
     READ item$  ' name or final terminator
     IF item$ = "-" THEN EXIT DO
-    IF flagcount = MAXFLAGS THEN PRINT "Please increase MAXFLAGS.": END
+    IF flagcount = MAXFLAGS THEN
+        PRINT : PRINT "Please increase MAXFLAGS.": END
+    END IF
     names$(flagcount) = item$
+
     drawcom$ = ""
     DO
         READ item$  ' Command, Argument or Flag Terminator
         IF item$ = "-" THEN EXIT DO
-        IF LEFT$(item$, 1) >= "A" AND LEFT$(item$, 1) <= "Z" THEN
-            drawcom$ = drawcom$ + item$
+        IF LEFT$(item$, 1) >= "0" AND LEFT$(item$, 1) <= "9" THEN
+            ' Argument (integer): convert into 2 bytes
+            item$ = MKI$(CINT(VAL(item$)))
         ELSE
-            drawcom$ = drawcom$ + MKI$(CINT(VAL(item$)))
+            ' Command (3 letters): convert into 1 byte:
+            '   4 high bits = command itself
+            '   4 low  bits = number of arguments
+            SELECT CASE item$
+                CASE "LIN": b = &H5
+                CASE "CLI": b = &H13
+                CASE "HRE": b = &H23
+                CASE "DHR": b = &H34
+                CASE "REC": b = &H45
+                CASE "DRE": b = &H56
+                CASE "CIR": b = &H64
+                CASE "ARC": b = &H76
+                CASE "FIL": b = &H84
+                CASE "DFI": b = &H95
+                CASE ELSE
+                    PRINT : PRINT "Unknown draw command " + item$ + ".": END
+            END SELECT
+            item$ = CHR$(b)
         END IF
+        drawcom$ = drawcom$ + item$
     LOOP
     drawcommands$(flagcount) = drawcom$
+
     flagcount = flagcount + 1
+    PRINT ".";
 LOOP
+
+PRINT
 
 END SUB
 
