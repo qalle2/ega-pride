@@ -1,9 +1,10 @@
 # ega-pride
-A multiple-choice pride flag quiz. Requires DOS and EGA. There are 32 flags at the moment. Compiled with Microsoft QuickBasic 4.5. Runs in screen 7 (320x200x16).
+A multiple-choice pride flag quiz. Requires DOS and EGA. There are 32 flags at the moment. Compiled with Microsoft QuickBasic 4.5. Runs in Screen 7 (320&times;200&times;16).
 
 The game can also be downloaded on [itch.io](https://qalle.itch.io/ega-pride).
 
-![screenshot; shows the rainbow flag and asks if it's the rainbow, intersex or pansexual flag](snap.png)
+![screenshot of title screen](snap-title.png)
+![in-game screenshot; asking what the rainbow-progress-intersex flag is](snap-ingame.png)
 
 Table of contents:
 * [Technical info](#technical-info)
