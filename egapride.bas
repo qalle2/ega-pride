@@ -702,7 +702,7 @@ SUB drawflag (drawcommands$)
 ' Draw a flag by Draw Commands.
 '   Draw Commands = a string with zero or more Blocks
 '     Block       = a Command followed by zero or more Arguments
-'       Command   = "AAA"-"ZZZ" in data lines, 2 bytes in RAM
+'       Command   = "AAA"-"ZZZ" in data lines, 1 byte in RAM
 '       Argument  = integer as 2 bytes; count depends on Command
 ' Commands and their Arguments (see also the readflagdata sub):
 '   LIN xyxyc  = LINe (not rectangle)
@@ -810,7 +810,6 @@ getchoice$ = k$
 
 END FUNCTION
 
-DEFSNG A-Z
 FUNCTION getfillpatt$ (color1%, color2%)
 ' Get a 8*2-pixel fill pattern for the PAINT statement.
 '   bytes 1-4 = blue/green/red/intensity of top    8*1 pixels
@@ -835,7 +834,6 @@ NEXT
 getfillpatt$ = pattern$
 END FUNCTION
 
-DEFSNG A-Z
 FUNCTION getgrade$ (score%)
 ' Describe score.
 ' If score >= ROUNDCNT * x/y, then score * y >= ROUNDCNT * x.
@@ -893,12 +891,11 @@ NEXT
 COLOR 7: PRINT
 END SUB
 
-DEFSNG A-Z
 SUB readflagdata
 ' read flag data
 DEFINT A-Z
 
-PRINT "Reading flag data...";
+PRINT "Reading flag data";
 
 flagcount = 0
 DO
@@ -920,6 +917,7 @@ DO
             ' Command (3 letters): convert into 1 byte:
             '   4 high bits = command itself
             '   4 low  bits = number of arguments
+            ' See also the drawflag sub.
             SELECT CASE item$
                 CASE "LIN": b = &H5
                 CASE "CLI": b = &H13
