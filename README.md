@@ -1,5 +1,5 @@
 # ega-pride
-A multiple-choice pride flag quiz. Requires DOS and EGA. There are 32 flags at the moment. Compiled with Microsoft QuickBasic 4.5. Runs in Screen 7 (320&times;200&times;16).
+A multiple-choice pride flag quiz. Requires DOS and EGA. There are 35 flags at the moment. Compiled with Microsoft QuickBasic 4.5. Runs in Screen 7 (320&times;200&times;16).
 
 The game can also be downloaded on [itch.io](https://qalle.itch.io/ega-pride).
 
@@ -12,20 +12,16 @@ Table of contents:
 
 ## Technical info
 * Flag width: always 320 pixels.
-* Flag height:
-  * usually 180 pixels (divisible by 2, 3, 4, 5, 6, 9, 10 and 12, among others)
-  * 182 pixels if it needs to be divisible by 7
-  * 176 pixels if it needs to be divisible by 8
+* Flag height: 182 pixels if it needs to be divisible by 7, otherwise 180 pixels.
 * The bottom two text lines are used for text, so the absolute maximum height for the flag is 200&minus;2&times;8&minus;1 = 183 pixels.
 
-When the 320x200 mode is shown at 4:3 aspect ratio, the pixel aspect ratio is 5:6, so some details of the flags need to be stretched horizontally by 6/5 to compensate.
+When the 320&times;200 mode is shown at 4:3 aspect ratio, the pixel aspect ratio is 5:6, so some details of the flags need to be stretched horizontally by 6/5 to compensate.
 
 ## Sources of flags
 * [abrosexual](https://commons.wikimedia.org/wiki/File:Abrosexual_flag.svg)
-* [aegosexual](https://lgbtqia.wiki/wiki/Aegosexual) (not yet implemented)
+* [aegosexual](https://lgbtqia.wiki/wiki/Aegosexual)
 * [agender](https://commons.wikimedia.org/wiki/File:Agender_pride_flag.svg)
-* [androgyne](https://lgbtqia.fandom.com/wiki/Androgyne) (not yet implemented)
-* [androsexual](https://orientation.fandom.com/wiki/Androsexual) (not yet implemented)
+* [androgyne](https://lgbtqia.fandom.com/wiki/Androgyne)
 * [aromantic](https://commons.wikimedia.org/wiki/File:Aromantic_Pride_Flag.svg)
 * [aromantic asexual](https://commons.wikimedia.org/wiki/File:Aroace_flag.svg)
 * [asexual](https://commons.wikimedia.org/wiki/File:Asexual_Pride_Flag.svg)
@@ -67,5 +63,5 @@ When the 320x200 mode is shown at 4:3 aspect ratio, the pixel aspect ratio is 5:
 * [sapphic](https://lgbtqia.fandom.com/wiki/Sapphic)
 * [thin rainbow-furry](https://commons.wikimedia.org/wiki/File:Furry_Pride_Flag.png) (not yet implemented)
 * [transgender](https://commons.wikimedia.org/wiki/File:Transgender_Pride_flag.svg)
-* [trigender](https://www.sexualdiversity.org/edu/flags/1120.php) (not yet implemented)
+* [trigender](https://www.sexualdiversity.org/edu/flags/1120.php)
 * [uranic](https://lgbtqia.wiki/wiki/Uranic) (by strwbryfemme) (not yet implemented)

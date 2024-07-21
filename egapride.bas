@@ -11,15 +11,11 @@ DECLARE FUNCTION getgrade$ (score%)
 DECLARE FUNCTION getfillpatt$ (color1%, color2%)
 DEFINT A-Z
 
+CONST PI = 3.141593
 CONST MAXFLAGS = 35  ' maximum number of flags
 CONST CHOICECNT = 3  ' number of choices
 CONST ROUNDCNT = 10  ' how many rounds
-CONST PI = 3.141593
-
-' 0 = normal operation
-' 1 = just show the first flag and quit
-' 2 = show all flags
-CONST DEBUGMODE = 0
+CONST DEBUGMODE = 0  ' 0=off, 1=on (show all flags)
 
 DIM SHARED names$(MAXFLAGS - 1)         ' names of flags
 DIM SHARED drawcommands$(MAXFLAGS - 1)  ' commands for drawing flags
@@ -50,6 +46,35 @@ DATA HRE, 72,36,15
 DATA HRE,108,36,12
 DATA HRE,144,36, 4
 DATA -
+DATA aegosexual
+' height 132
+' horizontal stripes
+DATA HRE, 0,33, 0
+DATA HRE,33,33, 7
+DATA HRE,66,33,15
+DATA HRE,99,33, 5
+' triangle, 1st part from top
+DATA LIN,  0, 0,39,32,5
+DATA CLI,280,32,      5
+DATA CLI,319, 0,      5
+DATA FIL,  1, 0,      5,5
+' triangle, 2nd part from top
+DATA LIN,240,65,279, 33,15
+DATA CLI, 40,33,        15
+DATA CLI, 79,65,        15
+DATA FIL, 42,34,        15,15
+' triangle, 2nd part from bottom
+DATA LIN, 79,66,119,98, 7
+DATA CLI,200,98,        7
+DATA CLI,240,66,        7
+DATA CLI, 79,66,        7
+DATA FIL, 81,67,        7,7
+' triangle, bottom part
+DATA LIN,120, 99,159,131,0
+DATA CLI,200, 99,        0
+DATA CLI,120, 99,        0
+DATA FIL,122,100,        0,0
+DATA -
 DATA agender
 DATA HRE,  0,26, 0
 DATA HRE, 26,26, 7
@@ -58,6 +83,11 @@ DATA HRE, 78,26,10
 DATA HRE,104,26,15
 DATA HRE,130,26, 7
 DATA HRE,156,26, 0
+DATA -
+DATA androgyne
+DATA DRE,  0,107,0,180,12,13
+DATA DRE,107,106,0,180, 9,13
+DATA DRE,213,107,0,180, 9,11
 DATA -
 DATA aromantic
 DATA HRE,  0,36, 2
@@ -623,6 +653,13 @@ DATA HRE, 72,36,15
 DATA DHR,108,36,12,15
 DATA HRE,144,36,11
 DATA -
+DATA trigender
+DATA DHR,  0,36,13,15
+DATA DHR, 36,36, 9,15
+DATA HRE, 72,36,10
+DATA DHR,108,36, 9,15
+DATA DHR,144,36,13,15
+DATA -
 DATA -
 
 RANDOMIZE TIMER
@@ -634,9 +671,7 @@ IF ROUNDCNT > flagcount THEN PRINT "Too many rounds.": END
 
 SCREEN 7
 
-IF DEBUGMODE = 1 THEN
-    CALL drawflag(drawcommands$(0)): END
-ELSEIF DEBUGMODE = 2 THEN
+IF DEBUGMODE THEN
     FOR i = 0 TO flagcount - 1
         CLS
         CALL drawflag(drawcommands$(i))
